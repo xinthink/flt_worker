@@ -1,0 +1,22 @@
+PODS:
+  - flt_worker (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - flt_worker (from `.symlinks/plugins/flt_worker/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  flt_worker:
+    :path: ".symlinks/plugins/flt_worker/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  flt_worker: c8e004da4493366fae63db1461b3d5054cba2a9e
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+
+PODFILE CHECKSUM: 083258d7f5e80b42ea9bfee905fe93049bc04c64
+
+COCOAPODS: 1.8.4

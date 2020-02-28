@@ -1,0 +1,33 @@
+.DS_Store
+.dart_tool/
+
+.packages
+.pub/
+
+build/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+# .idea/
+**/.idea/.name
+**/.idea/assetWizardSettings.xml
+**/.idea/caches
+# .idea/dictionaries
+**/.idea/gradle.xml
+**/.idea/jarRepositories.xml
+**/.idea/jsLibraryMappings.xml
+**/.idea/libraries
+**/.idea/misc.xml
+**/.idea/modules.xml
+**/.idea/navEditor.xml
+**/.idea/runConfigurations.xml
+**/.idea/tasks.xml
+**/.idea/vcs.xml
+**/.idea/workspace.xml
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+.vscode/

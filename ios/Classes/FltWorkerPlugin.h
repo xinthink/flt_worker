@@ -1,8 +1,21 @@
 #import <Flutter/Flutter.h>
 
-@interface FltWorkerPlugin : NSObject<FlutterPlugin> {
-  NSObject<FlutterPluginRegistrar> *_registrar;
-  FlutterEngine *_headlessEngine;
-  FlutterMethodChannel *_callbackChannel;
-}
+typedef void (^FuncRegisterPlugins)(NSObject<FlutterPluginRegistry>*registry);
+
+@interface FltWorkerPlugin : NSObject<FlutterPlugin>
+
+/**
+ * Provides a callback to register needed plugins for the headless isolate.
+ *
+ * Example:
+ * ```
+ * - (BOOL)application:(UIApplication *)application
+ *     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+ *   FltWorkerPlugin.registerPlugins = ^(NSObject<FlutterPluginRegistry> *registry) {
+ *     [GeneratedPluginRegistrant registerWithRegistry:registry];
+ *   };
+ * }
+ * ```
+ */
+@property (class, copy) FuncRegisterPlugins registerPlugins;
 @end

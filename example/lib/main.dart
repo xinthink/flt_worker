@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:flt_worker/flt_worker.dart';
+import 'package:flt_worker/flt_worker_ios.dart' as Workers;
 
 void main() {
   runApp(MyApp());
-  FltWorker.initialize();
+  Workers.initialize();
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           child: RaisedButton(
             child: const Text('Test Callback'),
             onPressed: () {
-              FltWorker.test(cb);
+              Workers.test(cb);
             },
           ),
         ),
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 
 void cb() {
   debugPrint('--- callback invoked');
-  FltWorker.test(cb1); // register another callback inside the background isolate
+  Workers.test(cb1); // register another callback inside the background isolate
 }
 
 void cb1() {

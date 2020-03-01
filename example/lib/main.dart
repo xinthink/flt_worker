@@ -17,8 +17,16 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: RaisedButton(
             child: const Text('Test Callback'),
-            onPressed: () {
+            onPressed: () async {
               Workers.test(cb);
+              bool r = await Workers.submitTaskRequest(Workers.BGAppRefreshTaskRequest("com.example.task1"), taskCallback);
+              debugPrint('returns $r');
+
+              r = await Workers.submitTaskRequest(Workers.BGProcessingTaskRequest("com.example.task2",
+                earliestBeginDate: DateTime.now(),
+                requiresExternalPower: true,
+              ), taskCallback);
+              debugPrint('returns $r');
             },
           ),
         ),
@@ -33,4 +41,8 @@ void cb() {
 
 void cb1() {
   debugPrint('--- callback 01 invoked');
+}
+
+void taskCallback() {
+
 }

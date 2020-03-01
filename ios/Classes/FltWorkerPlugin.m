@@ -3,11 +3,15 @@
 
 #define PLUGIN_PKG "dev.thinkng.flt_worker"
 #define API_METHOD(NAME) "FltWorkerPlugin#"#NAME
+#define WORK_KEY(id) [NSString stringWithFormat:@"dev.thinkng.flt_worker/works/%@", id]
+#define IS_NONNULL(V) V && ![NSNull.null isEqual:V]
 
 @implementation FltWorkerPlugin {
   FlutterEngine *_headlessEngine;
   FlutterMethodChannel *_callbackChannel;
   BOOL _isHeadlessEnginRegistered;
+  NSUserDefaults *_userDefaults;
+  NSDictionary *_workers;
 }
 
 static FltWorkerPlugin *instance = nil;
@@ -39,13 +43,15 @@ static FuncRegisterPlugins _registerPlugins = nil;
 - (instancetype)init {
   self = [super init];
   if (self) {
+    _userDefaults = [[NSUserDefaults alloc] init];
+
     // init a headless engine instance for callback
     _headlessEngine = [[FlutterEngine alloc] initWithName:@"flt_worker_isolate"
                                                   project:nil
                                    allowHeadlessExecution:YES];
 
     // channel for callbacks
-    _callbackChannel = [FlutterMethodChannel methodChannelWithName:@"dev.thinkng.flt_worker/callback"
+    _callbackChannel = [FlutterMethodChannel methodChannelWithName:@PLUGIN_PKG"/callback"
                                                    binaryMessenger:_headlessEngine];
 
     // register BGTask handler
@@ -58,9 +64,9 @@ static FuncRegisterPlugins _registerPlugins = nil;
 - (void)registerBGTaskHandler {
   NSArray *bgTaskIds = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"BGTaskSchedulerPermittedIdentifiers"];
   for (NSString *taskId in bgTaskIds) {
-    [[BGTaskScheduler sharedScheduler] registerForTaskWithIdentifier:taskId
-                                                          usingQueue:nil
-                                                       launchHandler:^(BGTask *task) {
+    [BGTaskScheduler.sharedScheduler registerForTaskWithIdentifier:taskId
+                                                        usingQueue:nil
+                                                     launchHandler:^(BGTask *task) {
       [self launchTask:task];
     }];
   }
@@ -71,7 +77,14 @@ static FuncRegisterPlugins _registerPlugins = nil;
   queue.maxConcurrentOperationCount = 1;
   
   NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-    NSLog(@"start executing task %@", task.identifier);
+    NSLog(@"start executing task: %@", task);
+    id work = [_userDefaults objectForKey:WORK_KEY(task.identifier)];
+    if (work) {
+      id rawHandle = [work objectForKey:@"callback"];
+      if (IS_NONNULL(rawHandle)) {
+        [self dispatchCallback:[rawHandle longValue]];
+      }
+    }
   }];
   [queue addOperation:operation];
   
@@ -79,6 +92,7 @@ static FuncRegisterPlugins _registerPlugins = nil;
     [queue cancelAllOperations];
   };
   queue.operations.lastObject.completionBlock = ^{
+    [_userDefaults removeObjectForKey:WORK_KEY(task.identifier)];
     [task setTaskCompletedWithSuccess:YES];
   };
 }
@@ -115,9 +129,74 @@ static FuncRegisterPlugins _registerPlugins = nil;
     result(nil);
   } else if ([@API_METHOD(test) isEqualToString:method]) {
     [self dispatchCallback:[args[0] longValue]];
-  } else {
+  } else if (![self handleBGTasksMethodCall:call result:result]) {
     result(FlutterMethodNotImplemented);
   }
 }
 
+// handle method calls specific for `BackgroundTasks`
+- (BOOL)handleBGTasksMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+  BOOL handled = YES;
+  NSString *method = call.method;
+  id args = call.arguments;
+  if ([@API_METHOD(submitTaskRequest) isEqualToString:method]) {
+    BGTaskRequest *req = [self parseTaskRequest:args[0]];
+    BOOL submitted = [BGTaskScheduler.sharedScheduler submitTaskRequest:req error:nil];
+    [self saveWorkData:req args:args];
+    if (submitted) {
+      [self saveWorkData:req args:args];
+    }
+    result(@(submitted));
+  } else if ([@API_METHOD(cancelTaskRequest) isEqualToString:method]) {
+    [BGTaskScheduler.sharedScheduler cancelTaskRequestWithIdentifier:call.arguments[@"identifier"]];
+    result(nil);
+  } else if ([@API_METHOD(cancelAllTaskRequests) isEqualToString:method]) {
+    [BGTaskScheduler.sharedScheduler cancelAllTaskRequests];
+    result(nil);
+  } else {
+    handled = NO;
+  }
+  
+  return handled;
+}
+
+- (BGTaskRequest*)parseTaskRequest:(id)arguments {
+  BGTaskRequest *req;
+  NSString *type = arguments[@"type"];
+  NSString *identifier = arguments[@"identifier"];
+  NSNumber *date = arguments[@"earliestBeginDate"];
+  NSDate *earliestBeginDate = nil;
+  if (IS_NONNULL(date)) {
+    earliestBeginDate = [NSDate dateWithTimeIntervalSince1970:(date.doubleValue / 1000.0)];
+  }
+  
+  if ([type isEqual:@"Processing"]) {
+    BGProcessingTaskRequest *processReq = [[BGProcessingTaskRequest alloc] initWithIdentifier:identifier];
+    req = processReq;
+    
+    id power = arguments[@"requiresExternalPower"];
+    if (IS_NONNULL(power)) {
+      processReq.requiresExternalPower = [power boolValue];
+    }
+    
+    id network = arguments[@"requiresNetworkConnectivity"];
+    if (IS_NONNULL(network)) {
+      processReq.requiresNetworkConnectivity = [network boolValue];
+    }
+  } else {
+    BGAppRefreshTaskRequest *refreshReq = [[BGAppRefreshTaskRequest alloc] initWithIdentifier:identifier];
+    req = refreshReq;
+  }
+  
+  req.earliestBeginDate = earliestBeginDate;
+  return req;
+}
+
+- (void)saveWorkData:(BGTaskRequest*)req args:(id)args {
+  NSMutableDictionary *work = [[NSMutableDictionary alloc] init];
+  if ([args count] > 1) {
+    [work setObject:args[1] forKey:@"callback"];
+  }
+  [_userDefaults setObject:work forKey:WORK_KEY(req.identifier)];
+}
 @end

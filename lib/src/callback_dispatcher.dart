@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import 'constants.dart';
+import 'utils.dart';
 
 /// Callback dispatcher, which is the entry of the isolate running background workers.
 void callbackDispatcher() {

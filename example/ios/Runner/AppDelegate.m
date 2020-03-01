@@ -17,4 +17,8 @@
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+  NSLog(@"app did enter background…");
+}
+
 @end

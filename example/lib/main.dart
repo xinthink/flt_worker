@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
               bool r = await Workers.submitTaskRequest(Workers.BGAppRefreshTaskRequest("com.example.task1"), taskCallback);
               debugPrint('returns $r');
 
-              r = await Workers.submitTaskRequest(Workers.BGProcessingTaskRequest("com.example.task2",
+              r = await Workers.submitTaskRequest(Workers.BGProcessingTaskRequest("dev.example.task2",
                 earliestBeginDate: DateTime.now(),
                 requiresExternalPower: true,
               ), taskCallback);
@@ -34,9 +34,11 @@ class MyApp extends StatelessWidget {
     );
 }
 
+// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.example.task1"]
+// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"dev.example.task2"]
 void cb() {
   debugPrint('--- callback invoked');
-  Workers.test(cb1); // register another callback inside the background isolate
+  // Workers.test(cb1); // register another callback inside the background isolate
 }
 
 void cb1() {
@@ -44,5 +46,5 @@ void cb1() {
 }
 
 void taskCallback() {
-
+  debugPrint('--- background task started...');
 }

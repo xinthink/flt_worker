@@ -9,8 +9,9 @@ import 'utils.dart';
 /// Callback dispatcher, which is the entry of the isolate running background workers.
 void callbackDispatcher() {
   WidgetsFlutterBinding.ensureInitialized();
-  final channel = MethodChannel('$CHANNEL_NAME/callback');
-  channel.setMethodCallHandler(_executeBackgroundTask);
+  // final channel = MethodChannel('$CHANNEL_NAME');
+  // channel.setMethodCallHandler(_executeBackgroundTask);
+  apiChannel.setMethodCallHandler(_executeBackgroundTask);
 }
 
 /// Run the specified function in the background isoloate.

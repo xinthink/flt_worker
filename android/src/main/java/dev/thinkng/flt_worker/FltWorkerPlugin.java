@@ -1,7 +1,6 @@
 package dev.thinkng.flt_worker;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,10 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import dev.thinkng.flt_worker.internal.AbsWorkerPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
@@ -23,8 +21,8 @@ import io.flutter.view.FlutterMain;
 import io.flutter.view.FlutterNativeView;
 import io.flutter.view.FlutterRunArguments;
 
-/** FltWorkerPlugin */
-public class FltWorkerPlugin implements FlutterPlugin, MethodCallHandler {
+/** Main entry of the FltWorkerPlugin, dedicated to main isolate. */
+public class FltWorkerPlugin extends AbsWorkerPlugin {
   /**
    * Provides a callback to register all needed plugins for background workers.
    * 
@@ -45,17 +43,13 @@ public class FltWorkerPlugin implements FlutterPlugin, MethodCallHandler {
    */
   public static Function<PluginRegistry, Void> registerPluginsForWorkers;
 
-  private static final String TAG = "FltWorker";
-  private static final String CHANNEL_NAME = "dev.thinkng.flt_worker";
-  private static final String METHOD_PREFIX = "FltWorkerPlugin#";
+//  private static final String TAG = "FltWorker";
+//  private static final String CHANNEL_NAME = "dev.thinkng.flt_worker";
+//  private static final String METHOD_PREFIX = "FltWorkerPlugin#";
 
   // The headless Flutter instance to run the callbacks.
   private static FlutterNativeView headlessView;
   private static final AtomicBoolean headlessViewStarted = new AtomicBoolean();
-  private static SharedPreferences prefs;
-
-
-  private Context context;
 
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
@@ -66,19 +60,28 @@ public class FltWorkerPlugin implements FlutterPlugin, MethodCallHandler {
   // Channel for callback dispatcher
   private MethodChannel callbackChannel;
 
-  private static SharedPreferences getPrefs(Context context) {
-    if (prefs == null) {
-      prefs = context.getSharedPreferences(CHANNEL_NAME, Context.MODE_PRIVATE);
-    }
-    return prefs;
+//  private static SharedPreferences getPrefs(Context context) {
+//    if (prefs == null) {
+//      prefs = context.getSharedPreferences(CHANNEL_NAME, Context.MODE_PRIVATE);
+//    }
+//    return prefs;
+//  }
+
+  public FltWorkerPlugin() {
+    super();
   }
 
-  @Override
-  public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-    context = flutterPluginBinding.getApplicationContext();
-    channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), CHANNEL_NAME);
-    channel.setMethodCallHandler(this);
+  public FltWorkerPlugin(Context context) {
+    super(context);
   }
+
+//  @Override
+//  public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+//    super.onAttachedToEngine(flutterPluginBinding);
+////    context = flutterPluginBinding.getApplicationContext();
+////    channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), CHANNEL_NAME);
+////    channel.setMethodCallHandler(this);
+//  }
 
   // This static function is optional and equivalent to onAttachedToEngine. It supports the old
   // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting
@@ -91,13 +94,13 @@ public class FltWorkerPlugin implements FlutterPlugin, MethodCallHandler {
   // in the same class.
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), CHANNEL_NAME);
-    channel.setMethodCallHandler(new FltWorkerPlugin());
+    channel.setMethodCallHandler(new FltWorkerPlugin(registrar.activity()));
   }
 
   private void startHeadlessEngine(Context context) {
     synchronized (headlessViewStarted) {
       if (headlessView == null) {
-        long handle = getPrefs(context).getLong("callback_dispatcher_handle", 0);
+        long handle = getPrefs().getLong("callback_dispatcher_handle", 0);
         FlutterCallbackInformation cbInfo = FlutterCallbackInformation.lookupCallbackInformation(handle);
         //noinspection ConstantConditions
         if (cbInfo == null) {
@@ -116,7 +119,10 @@ public class FltWorkerPlugin implements FlutterPlugin, MethodCallHandler {
         headlessView.runFromBundle(args);
       }
 
-      callbackChannel = new MethodChannel(headlessView, CHANNEL_NAME + "/callback");
+      if (callbackChannel != null) {
+        callbackChannel.setMethodCallHandler(null);
+      }
+      callbackChannel = new MethodChannel(headlessView, CHANNEL_NAME);
       callbackChannel.setMethodCallHandler(this);
     }
   }
@@ -126,8 +132,8 @@ public class FltWorkerPlugin implements FlutterPlugin, MethodCallHandler {
     PluginRegistry registry = headlessView.getPluginRegistry();
     if (!registry.hasPlugin("FltWorkerPlugin")) {
       Registrar registrar = registry.registrarFor("FltWorkerPlugin");
-      new MethodChannel(registrar.messenger(), CHANNEL_NAME)
-        .setMethodCallHandler(this);
+//      new MethodChannel(registrar.messenger(), CHANNEL_NAME)
+//        .setMethodCallHandler(this);
     }
 
     if (registerPluginsForWorkers != null) {
@@ -141,12 +147,12 @@ public class FltWorkerPlugin implements FlutterPlugin, MethodCallHandler {
   }
 
   @Override
-  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+  public boolean handleMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     String method = call.method;
     List args = (List) call.arguments;
     if (method.equals(METHOD_PREFIX + "initialize")) {
       if (!args.isEmpty()) {
-        getPrefs(context)
+        getPrefs()
             .edit()
             .putLong("callback_dispatcher_handle", ((Long) args.get(0)))
             .apply();
@@ -161,11 +167,6 @@ public class FltWorkerPlugin implements FlutterPlugin, MethodCallHandler {
     } else {
       result.notImplemented();
     }
-  }
-
-  @Override
-  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-    channel.setMethodCallHandler(null);
-    // TODO destroy background view & channel?
+    return true;
   }
 }

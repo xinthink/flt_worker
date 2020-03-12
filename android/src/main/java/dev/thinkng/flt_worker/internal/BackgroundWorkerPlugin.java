@@ -3,7 +3,17 @@ package dev.thinkng.flt_worker.internal;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.Collections;
+import androidx.annotation.Keep;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.work.Worker;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import dev.thinkng.flt_worker.FltWorkerPlugin;
@@ -15,10 +25,11 @@ import io.flutter.view.FlutterNativeView;
 import io.flutter.view.FlutterRunArguments;
 
 /** WorkerPlugin dedicated to the background isolate. */
+@Keep
 public class BackgroundWorkerPlugin extends AbsWorkerPlugin {
   private static BackgroundWorkerPlugin instance;
 
-  BackgroundWorkerPlugin getInstance(Context context) {
+  public static BackgroundWorkerPlugin getInstance(Context context) {
     synchronized (BackgroundWorkerPlugin.class) {
       if (instance == null) {
         instance = new BackgroundWorkerPlugin(context);
@@ -35,6 +46,26 @@ public class BackgroundWorkerPlugin extends AbsWorkerPlugin {
     super(context);
   }
 
+  /**
+   * Callback for doing the background work.
+   */
+  public Future<Void> doWork(@Nullable Worker worker) throws ExecutionException, InterruptedException {
+    if (worker != null) {
+      Log.d(TAG, "executing Work id=" + worker.getId() + " tags=" + worker.getTags());
+    } else {
+      Log.d(TAG, "executing an empty Work (test only)");
+    }
+
+    runOnMainThread(new Runnable() {
+      @Override
+      public void run() {
+        startHeadlessEngine(context);
+      }
+    }).get();
+    return dispatchCallback(getPrefs().getLong("worker_handle", 0), worker);
+  }
+
+  @UiThread
   private void startHeadlessEngine(Context context) {
     synchronized (headlessViewStarted) {
       if (headlessView == null) {
@@ -80,7 +111,33 @@ public class BackgroundWorkerPlugin extends AbsWorkerPlugin {
   }
 
   /** Dispatch a callback function call */
-  private void dispatchCallback(long handle) {
-    channel.invokeMethod(METHOD_PREFIX + "dispatch", Collections.singletonList(handle));
+  private Future<Void> dispatchCallback(final long handle,
+                                        @Nullable final Worker worker)
+      throws InterruptedException, ExecutionException {
+    final Map<String, Object> payload = new HashMap<>();
+    if (worker != null) {
+      // worker is null only if it's a testing request
+      payload.put("id", worker.getId().toString());
+      payload.put("input", worker.getInputData().getKeyValueMap());
+
+      LinkedList<String> tags = new LinkedList<>();
+      for (String tag : worker.getTags()) {
+        if (!tag.startsWith("dev.thinkng.flt_worker")) {
+          tags.add(tag);
+        }
+      }
+      payload.put("tags", tags);
+    }
+
+    final MethodCallFuture<Void> callback = new MethodCallFuture<>();
+    runOnMainThread(new Runnable() {
+      @Override
+      public void run() {
+        channel.invokeMethod(METHOD_PREFIX + "dispatch",
+            Arrays.asList(handle, payload),
+            callback);
+      }
+    }).get();
+    return callback;
   }
 }

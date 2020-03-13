@@ -17,3 +17,7 @@ Future<void> cancelTaskRequest(String identifier)
 /// Cancels all scheduled task requests.
 Future<void> cancelAllTaskRequests()
   => apiChannel.invokeMethod('$METHOD_PREFIX#cancelAllTaskRequests');
+
+/// Simulate launch BGTask with the given [identifier], **debugging only**
+Future<void> simulateLaunchTask(String identifier)
+  => apiChannel.invokeMethod('$METHOD_PREFIX#simulateLaunchTask', identifier);

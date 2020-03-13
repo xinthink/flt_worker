@@ -10,6 +10,11 @@
 #import "utils.h"
 #import <BackgroundTasks/BackgroundTasks.h>
 
+//#ifdef DEBUG
+//#import <objc/runtime.h>
+//#import <objc/message.h>
+//#endif
+
 @implementation BGTaskMgrDelegate
 
 // register background task indentifier/handler pairs
@@ -65,6 +70,9 @@
   } else if ([@API_METHOD(cancelAllTaskRequests) isEqualToString:method]) {
     [BGTaskScheduler.sharedScheduler cancelAllTaskRequests];
     result(nil);
+  } else if ([@API_METHOD(simulateLaunchTask) isEqualToString:method]) {
+    [self simulateLaunchTask:args];
+    result(nil);
   } else {
     handled = NO;
   }
@@ -102,6 +110,35 @@
   
   req.earliestBeginDate = earliestBeginDate;
   return req;
+}
+
+/** Simulate launch BGTask with the given identifier, using reflection & private APIs, for debugging only */
+- (void)simulateLaunchTask:(NSString*)identifier {
+//#ifdef DEBUG
+//  Method simulateMethod = nil;
+//  SEL simulateSel = nil;
+//  unsigned int numMethods = 0;
+//  Method *methods = class_copyMethodList([BGTaskScheduler class], &numMethods);
+//
+//  for (int i = 0; i < numMethods; i++) {
+//    SEL sel = method_getName(methods[i]);
+//    const char *name = sel_getName(sel);
+//    if (strcmp("_simulateLaunchForTaskWithIdentifier:", name) == 0) {
+//      simulateMethod = methods[i];
+//      simulateSel = sel;
+//      break;
+//    }
+//  }
+//
+//  if (simulateMethod) {
+//    // only works on simulator??
+////    ((void (*)(id, SEL, ...))objc_msgSend)([BGTaskScheduler sharedScheduler], simulateSel, identifier);
+////    ((void (*)(id, Method, ...))method_invoke)([BGTaskScheduler sharedScheduler], simulateMethod, identifier);
+//  }
+//  if (methods) {
+//    free(methods);
+//  }
+//#endif
 }
 
 @end

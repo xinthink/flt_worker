@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:flt_worker/flt_worker_ios.dart';
-// import 'package:flt_worker/flt_worker_android.dart';
-// import 'package:flt_worker/flt_worker.dart';
+//import 'package:flt_worker/flt_worker.dart';
+//import 'package:flt_worker/android.dart';
+import 'package:flt_worker/ios.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,13 +17,27 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: RaisedButton(
-            child: const Text('Test Callback'),
-            onPressed: () async {
-              // testWorker();
-              testBGTasks();
-            },
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                RaisedButton(
+                  child: const Text('Subimit Tasks'),
+                  onPressed: () async {
+                    // testWorker();
+                    testBGTasks();
+                  },
+                ),
+                RaisedButton(
+                  child: const Text('Simulate launch task'),
+                  onPressed: () {
+                    simulateLaunchTask("com.example.task1");
+//                    simulateLaunchTask("dev.example.task2");
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,6 +1,6 @@
+#import "utils.h"
 #import <Flutter/Flutter.h>
 
-typedef void (^FuncRegisterPlugins)(NSObject<FlutterPluginRegistry>*registry);
 
 @interface FltWorkerPlugin : NSObject<FlutterPlugin>
 
@@ -17,5 +17,5 @@ typedef void (^FuncRegisterPlugins)(NSObject<FlutterPluginRegistry>*registry);
  * }
  * ```
  */
-@property (class, copy) FuncRegisterPlugins registerPlugins;
+@property (class, nonatomic) FuncRegisterPlugins registerPlugins;
 @end

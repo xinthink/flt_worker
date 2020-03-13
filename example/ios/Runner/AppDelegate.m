@@ -9,7 +9,7 @@
   
   // set a callback to register all plugins to a headless engine instance
   FltWorkerPlugin.registerPlugins = ^(NSObject<FlutterPluginRegistry> *registry) {
-    [GeneratedPluginRegistrant registerWithRegistry:registry];
+//    [GeneratedPluginRegistrant registerWithRegistry:registry];
   };
   
   [GeneratedPluginRegistrant registerWithRegistry:self];

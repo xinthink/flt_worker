@@ -38,15 +38,9 @@ Future<dynamic> _executeBackgroundTask(MethodCall call) {
 }
 
 Map<String, dynamic> _decodePayload(Map<String, dynamic> payload) {
-  Map<String, dynamic> input = Map.castFrom(payload['input']);
-  String inputJson;
-  if (input != null) {
-    inputJson = input['data'];
-  }
-
-  if (inputJson?.isNotEmpty == true) {
-    payload['input'] = jsonDecode(inputJson);
-  }
-
+  Map<String, dynamic> input = Map.castFrom(payload['input'] ?? {});
+  String inputJson = input['data'];
+  input = inputJson?.isNotEmpty == true ? jsonDecode(inputJson) : {};
+  payload['input'] = input;
   return payload;
 }

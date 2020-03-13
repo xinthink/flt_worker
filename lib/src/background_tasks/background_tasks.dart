@@ -7,11 +7,8 @@ import '../utils.dart';
 export 'models.dart';
 
 /// Schedules a previously registered background task for execution.
-Future<bool> submitTaskRequest(BGTaskRequest request, void Function() callback)
-  => apiChannel.invokeMethod('$METHOD_PREFIX#submitTaskRequest', [
-    request.toJson(),
-    ensureRawHandle(callback),
-  ]);
+Future<bool> submitTaskRequest(BGTaskRequest request)
+  => apiChannel.invokeMethod('$METHOD_PREFIX#submitTaskRequest', request.toJson());
 
 /// Cancels a scheduled task request with the [identifier].
 Future<void> cancelTaskRequest(String identifier)

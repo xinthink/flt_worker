@@ -60,7 +60,7 @@ final class WorkRequests {
     if (delayJson instanceof Number) {
       long delay = ((Number) delayJson).longValue();
       if (delay > 0) {
-        builder.setInitialDelay(delay, TimeUnit.MILLISECONDS);
+        builder.setInitialDelay(delay, TimeUnit.MICROSECONDS);
       }
     }
 

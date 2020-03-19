@@ -12,14 +12,28 @@ abstract class WorkRequest {
   /// Input data of the work.
   final Map<String, dynamic> input;
 
-  /// Initial delay of the work, in milliseconds.
-  final int initialDelay;
+  /// The duration of initial delay of the work.
+  final Duration initialDelay;
+
+  /// Initial delay of the work, in microseconds.
+  final int initialDelayMicros;
+
+  /// Extracts initial delay in microseconds from the value of
+  /// [initialDelayMicros] or [initialDelay].
+  int get _initialDelayMicros =>
+    initialDelayMicros != null && initialDelayMicros >= 0
+    ? initialDelayMicros
+    : max(initialDelay?.inMicroseconds ?? 0, 0);
 
   /// Instantiates a WorkRequest with optional [tags] and [input] data.
+  ///
+  /// Optionally provides [initialDelayMicros] or [initialDelay] to specify the initial delay,
+  /// if both of them are provided, the value of [initialDelay] will be ignored.
   const WorkRequest({
     this.tags,
     this.input,
     this.initialDelay,
+    this.initialDelayMicros,
   });
 
   /// Serializes this work request into a json object.
@@ -29,7 +43,7 @@ abstract class WorkRequest {
     'input': <String, String>{
       'data': jsonEncode(input ?? ''), // always encode the input data
     },
-    'initialDelay': max(initialDelay ?? 0, 0),
+    'initialDelay': _initialDelayMicros,
   };
 }
 
@@ -39,6 +53,12 @@ class OneTimeWorkRequest extends WorkRequest {
   const OneTimeWorkRequest({
     Iterable<String> tags,
     Map<String, dynamic> input,
-    int initialDelay,
-  }) : super(tags: tags, input: input, initialDelay: initialDelay);
+    Duration initialDelay,
+    int initialDelayMicros,
+  }) : super(tags: tags, input: input, initialDelay: initialDelay, initialDelayMicros: initialDelayMicros);
+}
+
+@immutable
+class PeriodWorkRequest extends WorkRequest {
+
 }

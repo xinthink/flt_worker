@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 /// An abstract class for representing task requests.
@@ -11,17 +13,27 @@ abstract class BGTaskRequest {
   /// Specify `null` for no start delay.
   ///
   /// Setting the property indicates that the background task shouldn’t start any earlier than this date.
-  /// However, the system doesn’t guarantee launching the task at the specified date, but only that it won’t begin sooner.
+  /// However, the system doesn't guarantee launching the task at the specified date, but only that it won’t begin sooner.
   final DateTime earliestBeginDate;
 
-  /// Initializes a [BGTaskRequest] instance with a task [identifier]
-  /// and an optional [earliestBeginDate].
-  const BGTaskRequest(this.identifier, { this.earliestBeginDate });
+  /// Input data of the task.
+  final Map<String, dynamic> input;
+
+  /// Initializes a [BGTaskRequest] instance with the given [identifier].
+  ///
+  /// Optional properties:
+  /// - [earliestBeginDate]
+  /// - [input]
+  const BGTaskRequest(this.identifier, {
+    this.earliestBeginDate,
+    this.input,
+  });
 
   Map<String, dynamic> toJson() => {
     'type': (this is BGAppRefreshTaskRequest) ? 'AppRefresh' : 'Processing',
     'identifier': identifier,
     'earliestBeginDate': earliestBeginDate?.millisecondsSinceEpoch,
+    'input': jsonEncode(input ?? {}),
   };
 }
 
@@ -32,7 +44,8 @@ class BGAppRefreshTaskRequest extends BGTaskRequest {
   /// and an optional [earliestBeginDate].
   const BGAppRefreshTaskRequest(String identifier, {
     DateTime earliestBeginDate,
-  }) : super(identifier, earliestBeginDate: earliestBeginDate);
+    Map<String, dynamic> input,
+  }) : super(identifier, earliestBeginDate: earliestBeginDate, input: input);
 }
 
 /// A request to launch your app in the background to execute a processing task that can take minutes to complete.
@@ -49,9 +62,10 @@ class BGProcessingTaskRequest extends BGTaskRequest {
   /// and an optional [earliestBeginDate].
   const BGProcessingTaskRequest(String identifier, {
     DateTime earliestBeginDate,
+    Map<String, dynamic> input,
     this.requiresExternalPower,
     this.requiresNetworkConnectivity,
-  }) : super(identifier, earliestBeginDate: earliestBeginDate);
+  }) : super(identifier, earliestBeginDate: earliestBeginDate, input: input);
 
   @override
   Map<String, dynamic> toJson() {

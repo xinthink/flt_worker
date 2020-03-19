@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 #import "GeneratedPluginRegistrant.h"
 #import <flt_worker/FltWorkerPlugin.h>
+#import <path_provider/FLTPathProviderPlugin.h>
 
 @implementation AppDelegate
 
@@ -9,7 +10,7 @@
   
   // set a callback to register all plugins to a headless engine instance
   FltWorkerPlugin.registerPlugins = ^(NSObject<FlutterPluginRegistry> *registry) {
-//    [GeneratedPluginRegistrant registerWithRegistry:registry];
+    [FLTPathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTPathProviderPlugin"]];
   };
   
   [GeneratedPluginRegistrant registerWithRegistry:self];

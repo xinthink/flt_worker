@@ -87,9 +87,7 @@ static FuncRegisterPlugins _registerPlugins = nil;
   [_delegate.methodChannel invokeMethod:@API_METHOD(dispatch)
                               arguments:@[
                                 @(handle),
-                                @{
-                                  @"id": identifier,
-                                },
+                                [_delegate packPayloadForTask:identifier],
                               ]
                                  result:^(id _Nullable result) {
     if ([result isKindOfClass:[FlutterError class]]) {

@@ -36,8 +36,6 @@ flutter:
         pluginClass: FltWorkerPlugin
       ios:
         pluginClass: FltWorkerPlugin
-      macos:
-        pluginClass: FltWorkerPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

@@ -15,7 +15,7 @@
 #define DISPATCHER_KEY "dev.thinkng.flt_worker/callback_dispatcher_handle"
 #define WORKER_KEY "dev.thinkng.flt_worker/worker_handle"
 #define IS_NONNULL(V) V && ![NSNull.null isEqual:V]
-//#define WORK_KEY(id) [NSString stringWithFormat:@"dev.thinkng.flt_worker/works/%@", id]
+#define TASK_KEY(id) [NSString stringWithFormat:@"dev.thinkng.flt_worker/tasks/%@", id]
 #define WORKER_DEFAULTS_LONG(K) [[workerDefaults() objectForKey:@K] longValue] ?: 0
 
 /** Retrieves the `UserDefaults` instance for FltWorkerPlugin. */

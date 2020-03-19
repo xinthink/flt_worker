@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 //import 'package:flt_worker/flt_worker.dart';
 import 'package:flt_worker/android.dart';
 //import 'package:flt_worker/ios.dart';
-import 'package:flt_worker_example/work_manager.dart';
+
+import 'background_tasks.dart';
+import 'work_manager.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,43 +18,45 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Worker Examples'),
-        ),
-        body: Builder(
-          builder: (context) => SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  RaisedButton(
-                    child: const Text('Subimit Tasks'),
-                    onPressed: () async {
-                      testWorkManager();
+    home: Scaffold(
+      appBar: AppBar(
+        title: const Text('Worker Examples'),
+      ),
+      body: Builder(
+        builder: (context) => SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                RaisedButton(
+                  child: const Text('Subimit Tasks'),
+                  onPressed: () async {
+                    testWorkManager();
 //                    testBGTasks();
-                    },
+                  },
+                ),
+                RaisedButton(
+                  child: Text(Platform.isAndroid
+                    ? 'WorkManager example \n(low level API)'
+                    : 'BackgroundTasks example \n(low level API)',
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 0),
-                  Platform.isAndroid ? RaisedButton(
-                    child: const Text('WorkManager example \n(low level API)',
-                      textAlign: TextAlign.center,
-                    ),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (_) => WorkManagerExample(),
-                      ));
-                    },
-                  ) : const SizedBox(),
-                ],
-              ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => Platform.isAndroid ?
+                        WorkManagerExample() : BackgroundTasksExample(),
+                    ));
+                  },
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
+    ),
+  );
 }
 
 /// iOS BGTasks test.

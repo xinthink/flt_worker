@@ -56,6 +56,21 @@
   }
 }
 
+/** Caches an extra input data for the given task */
+- (void)saveExtrasForTask:(NSString*)identifier extras:(NSString*)extras {
+  [workerDefaults() setObject:extras forKey:TASK_KEY(identifier)];
+}
+
+/** Makes a payload dict used as input of the dart worker */
+- (NSDictionary*)packPayloadForTask:(NSString*)identifier {
+  return @{
+    @"id": identifier,
+    @"input": @{
+        @"data": [workerDefaults() objectForKey:TASK_KEY(identifier)],
+    },
+  };
+}
+
 - (BOOL)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   BOOL handled = YES;
   NSString *method = call.method;
@@ -109,6 +124,10 @@
   }
   
   req.earliestBeginDate = earliestBeginDate;
+
+  // parse & cache extra input data
+  NSString *extras = arguments[@"input"];
+  [self saveExtrasForTask:identifier extras:extras];
   return req;
 }
 

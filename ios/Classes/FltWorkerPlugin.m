@@ -59,7 +59,7 @@ static FltWorkerPlugin *instance = nil;
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-  NSLog(@"--- handling method call: %@ args=%@", call.method, call.arguments);
+//  NSLog(@"--- handling method call: %@ args=%@", call.method, call.arguments);
   NSString *method = call.method;
   NSArray *args = call.arguments;
   if ([@API_METHOD(initialize) isEqualToString:method]) {

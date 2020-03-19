@@ -6,6 +6,7 @@ import androidx.work.BackoffPolicy;
 import androidx.work.Constraints;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkRequest;
 
 import org.junit.Test;
@@ -31,6 +32,23 @@ public class WorkRequestsTest {
     assertEquals(Arrays.asList(BackgroundWorker.class.getName(), "test", "work"),
         new ArrayList<>(req.getTags()));
     assertEquals(10000, req.getWorkSpec().initialDelay); // 10 seconds in milliseconds
+  }
+
+  @Test
+  public void parsePeriodicWorkRequest() {
+    Map<String, Object> json = new HashMap<>();
+    json.put("type", "Periodic");
+    json.put("repeatInterval", 86400 * 1000000L); // 1 day in microseconds
+    json.put("tags", Arrays.asList("test", "periodic"));
+    json.put("initialDelay", 10000000); // 10 seconds in microseconds
+
+    WorkRequest req = WorkRequests.parseRequest(json);
+
+    assertTrue(req instanceof PeriodicWorkRequest);
+    assertEquals(Arrays.asList(BackgroundWorker.class.getName(), "test", "periodic"),
+        new ArrayList<>(req.getTags()));
+    assertEquals(10000, req.getWorkSpec().initialDelay); // 10 seconds in milliseconds
+    assertEquals(86400 * 1000L, req.getWorkSpec().intervalDuration); // 1 day in milliseconds
   }
 
   @Test
@@ -92,5 +110,19 @@ public class WorkRequestsTest {
     if (Build.VERSION.SDK_INT >= 23) assertTrue(constraints.requiresDeviceIdle());
     assertFalse(constraints.requiresStorageNotLow());
     assertFalse(constraints.requiresCharging()); // fallback to defaults
+  }
+
+  @Test
+  public void parseFlexInterval() {
+    Map<String, Object> json = new HashMap<>();
+    json.put("type", "Periodic");
+    json.put("repeatInterval", 86400 * 1000000L); // 1 day in microseconds
+    json.put("flexInterval", 600 * 1000000L); // 10 minutes in microseconds
+
+    WorkRequest req = WorkRequests.parseRequest(json);
+
+    assertTrue(req instanceof PeriodicWorkRequest);
+    assertEquals(86400 * 1000L, req.getWorkSpec().intervalDuration); // 1 day in milliseconds
+    assertEquals(600 * 1000L, req.getWorkSpec().flexDuration); // 10 minutes in milliseconds
   }
 }

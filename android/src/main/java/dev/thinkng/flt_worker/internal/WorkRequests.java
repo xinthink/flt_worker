@@ -45,8 +45,7 @@ final class WorkRequests {
     try {
       String type = (String) json.get("type");
       if ("Periodic".equals(type)) {
-        return new PeriodicWorkRequest.Builder(BackgroundWorker.class, 0, TimeUnit.SECONDS)
-            .build();
+        return parsePeriodicWorkRequest(json);
       } else {
         return parseOneTimeWorkRequest(json);
       }
@@ -58,7 +57,28 @@ final class WorkRequests {
   @NonNull
   private static WorkRequest parseOneTimeWorkRequest(@NonNull Map json) {
     OneTimeWorkRequest.Builder builder = new OneTimeWorkRequest.Builder(BackgroundWorker.class);
+    populateRequestBuilder(builder, json);
+    return builder.build();
+  }
 
+  @SuppressWarnings("ConstantConditions")
+  @NonNull
+  private static WorkRequest parsePeriodicWorkRequest(@NonNull Map json) {
+    long repeatInterval = ((Number) json.get("repeatInterval")).longValue();
+    Number flexInterval = (Number) json.get("flexInterval");
+
+    PeriodicWorkRequest.Builder builder = flexInterval != null ?
+        new PeriodicWorkRequest.Builder(BackgroundWorker.class,
+            repeatInterval, TimeUnit.MICROSECONDS,
+            flexInterval.longValue(), TimeUnit.MICROSECONDS) :
+        new PeriodicWorkRequest.Builder(BackgroundWorker.class,
+            repeatInterval, TimeUnit.MICROSECONDS);
+
+    populateRequestBuilder(builder, json);
+    return builder.build();
+  }
+
+  private static void populateRequestBuilder(WorkRequest.Builder builder, @NonNull Map json) {
     Object tagsJson = json.get("tags");
     if (tagsJson instanceof Iterable) {
       for (Object tag : (List) tagsJson) {
@@ -93,7 +113,6 @@ final class WorkRequests {
           .putAll((Map<String, Object>) inputJson)
           .build());
     }
-    return builder.build();
   }
 
   @Nullable

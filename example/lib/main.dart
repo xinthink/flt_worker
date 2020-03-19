@@ -74,6 +74,13 @@ Future<void> testWorkManager() async {
    final enqueued = await enqueueWorkRequest(const OneTimeWorkRequest(
      tags: ['hello', 'work'],
      initialDelay: Duration(seconds: 10),
+     constraints: WorkConstraints(
+       networkType: NetworkType.notRoaming,
+     ),
+     backoffCriteria: BackoffCriteria(
+       policy: BackoffPolicy.linear,
+       delay: Duration(seconds: 20),
+     ),
      input: <String, dynamic>{
        'name': 'task 01',
        'args': <dynamic>[

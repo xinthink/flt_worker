@@ -57,20 +57,59 @@ abstract class WorkRequest {
   };
 }
 
+/// Defines an one-off work request.
 @immutable
 class OneTimeWorkRequest extends WorkRequest {
-  /// Instantiates a WorkRequest with optional [tags] and [input] data.
+  /// Instantiates an [OneTimeWorkRequest].
+  ///
+  /// With optional [tags] and [input] data.
   const OneTimeWorkRequest({
     Iterable<String> tags,
     Map<String, dynamic> input,
     Duration initialDelay,
     int initialDelayMicros,
-  }) : super(tags: tags, input: input, initialDelay: initialDelay, initialDelayMicros: initialDelayMicros);
+    WorkConstraints constraints,
+    BackoffCriteria backoffCriteria,
+  }) : super(
+    tags: tags,
+    input: input,
+    initialDelay: initialDelay,
+    initialDelayMicros: initialDelayMicros,
+    constraints: constraints,
+    backoffCriteria: backoffCriteria,
+  );
 }
 
+/// Defines a periodic work request.
 @immutable
 class PeriodWorkRequest extends WorkRequest {
+  /// The repeat interval
+  final Duration repeatInterval;
 
+  /// The duration for which the work repeats from the end of the [repeatInterval].
+  ///
+  /// Note that flex intervals are ignored for certain OS versions (in particular, API 23).
+  final Duration flexInterval;
+
+  /// Creates a [PeriodWorkRequest] to run periodically once every [repeatInterval] period
+  /// , with an optional [flexInterval].
+  const PeriodWorkRequest({
+    @required this.repeatInterval,
+    this.flexInterval,
+    Iterable<String> tags,
+    Map<String, dynamic> input,
+    Duration initialDelay,
+    int initialDelayMicros,
+    WorkConstraints constraints,
+    BackoffCriteria backoffCriteria,
+  }) : super(
+    tags: tags,
+    input: input,
+    initialDelay: initialDelay,
+    initialDelayMicros: initialDelayMicros,
+    constraints: constraints,
+    backoffCriteria: backoffCriteria,
+  );
 }
 
 /// Constraints for a [WorkRequest].

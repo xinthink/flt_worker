@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 //import 'package:flt_worker/flt_worker.dart';
 import 'package:flt_worker/android.dart';
 //import 'package:flt_worker/ios.dart';
+import 'package:flt_worker_example/work_manager.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,28 +18,36 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Worker Examples'),
         ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                RaisedButton(
-                  child: const Text('Subimit Tasks'),
-                  onPressed: () async {
-                    testWorkManager();
+        body: Builder(
+          builder: (context) => SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  RaisedButton(
+                    child: const Text('Subimit Tasks'),
+                    onPressed: () async {
+                      testWorkManager();
 //                    testBGTasks();
-                  },
-                ),
-                RaisedButton(
-                  child: const Text('Simulate launch task'),
-                  onPressed: () {
-//                    simulateLaunchTask("com.example.task1");
-//                    simulateLaunchTask("dev.example.task2");
-                  },
-                ),
-              ],
+                    },
+                  ),
+                  const SizedBox(height: 0),
+                  Platform.isAndroid ? RaisedButton(
+                    child: const Text('WorkManager example \n(low level API)',
+                      textAlign: TextAlign.center,
+                    ),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (_) => WorkManagerExample(),
+                      ));
+                    },
+                  ) : const SizedBox(),
+                ],
+              ),
             ),
           ),
         ),

@@ -11,6 +11,10 @@ public class MainActivity extends FlutterActivity {
   @Override
   public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
     GeneratedPluginRegistrant.registerWith(flutterEngine);
-    FltWorkerPlugin.registerPluginsForWorkers = registry -> null;
+    FltWorkerPlugin.registerPluginsForWorkers = registry -> {
+      io.flutter.plugins.pathprovider.PathProviderPlugin.registerWith(
+          registry.registrarFor("io.flutter.plugins.pathprovider.PathProviderPlugin"));
+      return null;
+    };
   }
 }

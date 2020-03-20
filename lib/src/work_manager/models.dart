@@ -82,7 +82,7 @@ class OneTimeWorkRequest extends WorkRequest {
 
 /// Defines a periodic work request.
 @immutable
-class PeriodWorkRequest extends WorkRequest {
+class PeriodicWorkRequest extends WorkRequest {
   /// The repeat interval
   final Duration repeatInterval;
 
@@ -91,9 +91,9 @@ class PeriodWorkRequest extends WorkRequest {
   /// Note that flex intervals are ignored for certain OS versions (in particular, API 23).
   final Duration flexInterval;
 
-  /// Creates a [PeriodWorkRequest] to run periodically once every [repeatInterval] period
+  /// Creates a [PeriodicWorkRequest] to run periodically once every [repeatInterval] period
   /// , with an optional [flexInterval].
-  const PeriodWorkRequest({
+  const PeriodicWorkRequest({
     @required this.repeatInterval,
     this.flexInterval,
     Iterable<String> tags,

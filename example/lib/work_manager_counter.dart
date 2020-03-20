@@ -14,7 +14,7 @@ class WorkManagerCounter extends StatelessWidget {
     initializeWorker(doWork);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WorkManager Example'),
+        title: const Text('Counter'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -27,19 +27,8 @@ class WorkManagerCounter extends StatelessWidget {
   }
 
   /// Renders the latest counter by watching a data file.
-  Widget _buildCounter() => FutureBuilder<String>(
-    future: _counterFile().then((f) => f.path),
-    builder: (_, snapshot) => snapshot.hasData
-      ? StreamBuilder(
-        stream: _counterStream(snapshot.data),
-        builder: (_, __) => _buildCounterStatus(),
-      )
-      : Container(),
-  );
-
-  /// Renders the counter & a button to increase its value.
-  Widget _buildCounterStatus() => FutureBuilder<int>(
-    future: _counterFromFile(),
+  Widget _buildCounter() => StreamBuilder<int>(
+    stream: _counterStream,
     builder: (_, snapshot) => Column(
       children: <Widget>[
         RichText(
@@ -84,7 +73,10 @@ class WorkManagerCounter extends StatelessWidget {
   }
 
   /// A stream of update events of the counter file.
-  Stream<void> _counterStream(String path) => PollingFileWatcher(path).events;
+  Stream<int> get _counterStream => _counterFile().asStream()
+      .map((file) => file.path)
+      .asyncExpand((path) => PollingFileWatcher(path).events)
+      .asyncMap((_) => _counterFromFile());
 
   /// Reads counter from a file.
   Future<int> _counterFromFile() async {

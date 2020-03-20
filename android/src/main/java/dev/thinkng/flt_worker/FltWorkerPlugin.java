@@ -66,8 +66,8 @@ public class FltWorkerPlugin extends AbsWorkerPlugin {
   public boolean handleMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     boolean handled = true;
     String method = call.method;
-    List args = (List) call.arguments;
     if (method.equals(METHOD_PREFIX + "initialize")) {
+      List args = (List) call.arguments;
       if (args.size() > 1) {
         Long dispatcherHandler = (Long) args.get(0);
         Long workerHandler = (Long) args.get(1);

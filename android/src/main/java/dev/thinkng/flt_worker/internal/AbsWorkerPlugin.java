@@ -13,6 +13,7 @@ import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -81,7 +82,7 @@ public abstract class AbsWorkerPlugin implements FlutterPlugin, MethodCallHandle
     }
   }
 
-  @SuppressWarnings("unused")
+  @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
   public boolean handleMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     boolean handled = true;
     switch (call.method) {
@@ -89,6 +90,16 @@ public abstract class AbsWorkerPlugin implements FlutterPlugin, MethodCallHandle
         doEnqueue(call, result);
         break;
       case METHOD_PREFIX + "cancelAllWorkByTag":
+        WorkManager.getInstance(context).cancelAllWorkByTag((String) call.arguments);
+        break;
+      case METHOD_PREFIX + "cancelUniqueWork":
+        WorkManager.getInstance(context).cancelUniqueWork((String) call.arguments);
+        break;
+      case METHOD_PREFIX + "cancelWorkById":
+        WorkManager.getInstance(context).cancelWorkById(UUID.fromString((String) call.arguments));
+        break;
+      case METHOD_PREFIX + "cancelAllWork":
+        WorkManager.getInstance(context).cancelAllWork();
         break;
       default:
         handled = false;

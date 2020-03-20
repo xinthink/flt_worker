@@ -16,6 +16,8 @@ dependencies:
 
   path_provider: ^1.6.5
   watcher: ^0.9.7+14
+  http: ^0.12.0+4
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:

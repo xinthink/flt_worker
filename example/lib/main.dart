@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flt_worker/android.dart';
 //import 'package:flt_worker/ios.dart';
 
-import 'background_tasks.dart';
-import 'work_manager.dart';
+import 'background_tasks_counter.dart';
+import 'work_manager_counter.dart';
 
 void main() {
   runApp(MyApp());
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (_) => Platform.isAndroid ?
-                        WorkManagerExample() : BackgroundTasksExample(),
+                        WorkManagerCounter() : BackgroundTasksCounter(),
                     ));
                   },
                 ),
@@ -113,9 +113,9 @@ Future<void> testWorkManager() async {
    debugPrint('--- enqueued: $enqueued');
 }
 
-Future<void> doWork(Map<String, dynamic> payload) async => Future.delayed(Duration(seconds: 1), () async {
+Future<void> doWork(WorkPayload payload) async => Future.delayed(Duration(seconds: 1), () async {
    debugPrint('--- doing work in flutter, payload=$payload');
-   Map<String, dynamic> input = payload['input'];
+   Map<String, dynamic> input = payload.input;
    if (input['name'] == 'task 01') {
      debugPrint("    args[2] * opts['op2'] = ${input['args'][2] * input['opts']['op2']}");
      final enqueued = await enqueueWorkRequest(const OneTimeWorkRequest(

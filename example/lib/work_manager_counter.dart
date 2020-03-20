@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flt_worker/ios.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:watcher/watcher.dart';
 
-/// BackgroundTasks api example for the iOS platform.
-class BackgroundTasksExample extends StatelessWidget {
+import 'package:flt_worker/android.dart';
+
+/// WorkManager api example for the Android platform.
+class WorkManagerCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     initializeWorker(doWork);
@@ -69,9 +70,13 @@ class BackgroundTasksExample extends StatelessWidget {
     )
   );
 
-  /// Submit a background task to update the counter.
+  /// Enqueues a work request to update the counter.
   void _increaseCounter(int counter) {
-    submitTaskRequest(BGProcessingTaskRequest("com.example.task1",
+    enqueueWorkRequest(OneTimeWorkRequest(
+      tags: ['counter'],
+      constraints: WorkConstraints(
+        networkType: NetworkType.notRequired,
+      ),
       input: <String, dynamic>{
         'counter': counter,
       },
@@ -79,8 +84,9 @@ class BackgroundTasksExample extends StatelessWidget {
   }
 
   /// A stream of update events of the counter file.
-  Stream<dynamic> _counterStream(String path) => FileWatcher(path).events;
+  Stream<void> _counterStream(String path) => PollingFileWatcher(path).events;
 
+  /// Reads counter from a file.
   Future<int> _counterFromFile() async {
     try {
       final counterStr = await (await _counterFile()).readAsString();
@@ -92,24 +98,14 @@ class BackgroundTasksExample extends StatelessWidget {
   }
 }
 
-/// A worker callback running in the background isolate.
-Future<void> doWork(Map<String, dynamic> payload) => _counterWork(payload['input']);
+/// Worker callback running in the background isolate.
+Future<void> doWork(WorkPayload payload) => _counterWork(payload.input);
 
 /// The worker working on the counter.
 Future<void> _counterWork(Map<String, dynamic> input) async {
   debugPrint('--- counting, input=$input');
   final counter = input['counter'] ?? 0;
   await (await _counterFile()).writeAsString('${counter + 1}');
-//  int counter = 0;
-//  final file = await _counterFile();
-//  try {
-//    final counterStr = await file.readAsString();
-//    counter = counterStr.isNotEmpty ? int.parse(counterStr) : 0;
-//  } catch (e) {
-//    debugPrint('read counter file failed: $e');
-//  }
-//
-//  await file.writeAsString('${counter + 1}');
 }
 
 /// Returns the counter file path.

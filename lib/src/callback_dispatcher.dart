@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+import 'models.dart';
 import 'utils.dart';
 
 /// Callback dispatcher, which is the entry of the isolate running background workers.
@@ -30,17 +30,9 @@ Future<dynamic> _executeBackgroundTask(MethodCall call) {
   }
 
   if (callback != null) {
-    return callback(_decodePayload(payload));
+    return callback(WorkPayload.fromJson(payload));
   }
 
   debugPrint('Callback not found for method=${call.method} args=$args');
   return Future.value();
-}
-
-Map<String, dynamic> _decodePayload(Map<String, dynamic> payload) {
-  Map<String, dynamic> input = Map.castFrom(payload['input'] ?? {});
-  String inputJson = input['data'];
-  input = inputJson?.isNotEmpty == true ? jsonDecode(inputJson) : {};
-  payload['input'] = input;
-  return payload;
 }

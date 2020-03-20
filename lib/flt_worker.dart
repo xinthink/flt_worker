@@ -6,6 +6,8 @@ import 'dart:async';
 import 'src/callback_dispatcher.dart';
 import 'src/utils.dart';
 
+export 'src/models.dart';
+
 /// Initialize the worker plugin, which will start a callback ioslate.
 ///
 /// All background work will be dispatched to the [worker] function,

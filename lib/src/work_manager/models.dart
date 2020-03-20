@@ -49,7 +49,7 @@ abstract class WorkRequest {
     'type': (this is OneTimeWorkRequest) ? 'OneTime' : 'Periodic',
     'tags': tags,
     'input': <String, String>{
-      'data': jsonEncode(input ?? ''), // always encode the input data
+      'data': jsonEncode(input ?? {}), // always encode the input data
     },
     'initialDelay': _initialDelayMicros,
     'constraints': constraints?.toJson(),
@@ -110,6 +110,11 @@ class PeriodWorkRequest extends WorkRequest {
     constraints: constraints,
     backoffCriteria: backoffCriteria,
   );
+
+  @override
+  Map<String, dynamic> toJson() => super.toJson()
+    ..['repeatInterval'] = repeatInterval.inMicroseconds
+    ..['flexInterval'] = flexInterval?.inMicroseconds;
 }
 
 /// Constraints for a [WorkRequest].

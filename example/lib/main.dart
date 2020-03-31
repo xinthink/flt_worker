@@ -2,18 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-//import 'package:flt_worker/flt_worker.dart';
+import 'package:flt_worker/flt_worker.dart';
 //import 'package:flt_worker/android.dart';
 //import 'package:flt_worker/ios.dart';
 
-import 'work_manager_btc_prices.dart';
 import 'background_tasks_counter.dart';
+import 'work_manager_btc_prices.dart';
 import 'work_manager_counter.dart';
+import 'worker.dart';
 
 void main() {
   runApp(MyApp());
 //  initializeWorker(doWork); // Android
 //  initializeWorker(handleBGTask); // iOS
+  initializeWorker(worker);
 }
 
 class MyApp extends StatelessWidget {
@@ -90,6 +92,7 @@ List<Widget> _bgTasksExamples(BuildContext context) => [
 
 /// iOS BGTasks test.
 ///
+/// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.example.counter_task"]
 /// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.example.task1"]
 /// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"dev.example.task2"]
 Future<void> testBGTasks() async {

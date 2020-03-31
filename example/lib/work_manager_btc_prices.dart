@@ -1,14 +1,8 @@
-import 'dart:async';
-import 'dart:io';
-
+import 'package:flt_worker/android.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:watcher/watcher.dart';
 
-import 'package:flt_worker/android.dart';
-
-import 'rest.dart';
+import 'btc_price_file.dart';
 
 /// An example for using low level `WorkManager` api on the Android platform,
 /// which polls Bitcoin price periodically every 900 seconds.
@@ -31,25 +25,22 @@ class _BtcPricesState extends State<WorkManagerBtcPrices> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    _startPolling();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bitcoin Price'),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: const Text('Bitcoin Price'),
+    ),
+    body: SingleChildScrollView(
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+        child: _buildDashboard(),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
-          child: _buildDashboard(),
-        ),
-      ),
-    );
-  }
+    ),
+  );
 
   /// Renders the latest Bitcoin price by watching a data file.
-  Widget _buildDashboard() => StreamBuilder<double>(
-    stream: _priceStream,
+  Widget _buildDashboard() => StreamBuilder<dynamic>(
+    stream: btcPriceStream(),
     builder: (_, snapshot) => Column(
       children: <Widget>[
         RichText(
@@ -71,16 +62,22 @@ class _BtcPricesState extends State<WorkManagerBtcPrices> {
                 ),
               ),
               TextSpan(
-                text: snapshot.hasData ? '\$${snapshot.data}' : '',
+                text: snapshot.hasData
+                  ? NumberFormat.currency(symbol: '\$', decimalDigits: 2)
+                    .format(snapshot.data['amount'])
+                  : '',
                 style: const TextStyle(
                   color: Colors.blueAccent,
                 ),
               ),
               TextSpan(
-                text: snapshot.hasData ? '\nUpdated at: ${DateFormat.Hm().format(DateTime.now())}' : '',
+                text: snapshot.hasData
+                  ? '\nUpdated at: ${DateFormat('hh:mm a, yyyy MMM dd')
+                    .format(DateTime.fromMillisecondsSinceEpoch(snapshot.data['time']))}'
+                  : '',
                 style: const TextStyle(
                   color: Colors.black38,
-                  fontSize: 16,
+                  fontSize: 14,
                   height: null,
                 ),
               ),
@@ -92,8 +89,7 @@ class _BtcPricesState extends State<WorkManagerBtcPrices> {
   );
 
   /// Enqueues a work request to poll the price.
-  void _startPolling() async {
-    await initializeWorker(doWork);
+  void _startPolling() {
     enqueueWorkRequest(const PeriodicWorkRequest(
       repeatInterval: Duration(seconds: 30),
       tags: ['btc'],
@@ -102,41 +98,4 @@ class _BtcPricesState extends State<WorkManagerBtcPrices> {
       ),
     ));
   }
-
-  /// A stream of update events of the data file.
-  Stream<double> get _priceStream => _dataFile().asStream()
-      .map((file) => file.path)
-      .asyncExpand((path) => PollingFileWatcher(path).events)
-      .asyncMap((_) => _priceFromFile());
-
-  /// Reads the price from a data file.
-  Future<double> _priceFromFile() async {
-    try {
-      final priceStr = await (await _dataFile()).readAsString();
-      return priceStr.isNotEmpty ? double.parse(priceStr) : null;
-    } catch (e) {
-      debugPrint('read data file failed: $e');
-      return null;
-    }
-  }
-}
-
-/// Worker callback running in the background isolate.
-Future<void> doWork(WorkPayload payload) => _pollBtcPrice();
-
-/// The worker polling the latest BTC price.
-Future<void> _pollBtcPrice() async {
-  debugPrint('--- polling BTC price');
-  final resp = await getJson('https://api.coinbase.com/v2/prices/spot?currency=USD');
-  await (await _dataFile()).writeAsString("${resp['data']['amount']}");
-}
-
-/// Returns the BTC price file path.
-Future<File> _dataFile() async {
-  final tempPath = (await getTemporaryDirectory()).path;
-  final file = File('$tempPath/btc_price.json');
-  if (!(await file.exists())) {
-    await file.writeAsString('{}', flush: true);
-  }
-  return file;
 }

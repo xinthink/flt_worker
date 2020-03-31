@@ -24,7 +24,7 @@ class WorkPayload {
     input = inputJson?.isNotEmpty == true ? jsonDecode(inputJson) : {};
     return WorkPayload._(
       id: json['id'],
-      tags: Iterable.castFrom<dynamic, String>(json['tags']) ?? [],
+      tags: Iterable.castFrom<dynamic, String>(json['tags'] ?? []),
       input: input,
     );
   }

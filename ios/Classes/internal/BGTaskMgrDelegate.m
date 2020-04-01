@@ -65,6 +65,7 @@
 - (NSDictionary*)packPayloadForTask:(NSString*)identifier {
   return @{
     @"id": identifier,
+    @"tags": @[identifier],
     @"input": @{
         @"data": [workerDefaults() objectForKey:TASK_KEY(identifier)],
     },

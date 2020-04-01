@@ -1,4 +1,4 @@
-import 'package:flt_worker/android.dart';
+import 'package:flt_worker/work_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'counter_file.dart';
@@ -55,7 +55,7 @@ class WorkManagerCounter extends StatelessWidget {
   /// Enqueues a work request to update the counter.
   void _increaseCounter(int counter) {
     enqueueWorkRequest(OneTimeWorkRequest(
-      tags: ['counter'],
+      tags: [kTagCounterWork],
       constraints: WorkConstraints(
         networkType: NetworkType.notRequired,
       ),

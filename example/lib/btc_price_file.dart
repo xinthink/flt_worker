@@ -7,22 +7,31 @@ import 'package:watcher/watcher.dart';
 
 import 'rest.dart';
 
+const kTagBtcPricesWork = 'com.example.btc_prices_task';
+
 /// Returns the BTC price file path.
 Future<File> btcPriceFile() async {
-  final tempPath = (await getTemporaryDirectory()).path;
-  final file = File('$tempPath/btc_price.json');
+  final dir = (await getTemporaryDirectory()).path;
+  final file = File('$dir/btc_price.json');
   if (!(await file.exists())) {
     await file.writeAsString('{}', flush: true);
   }
   return file;
 }
 
-/// A stream of update events of the data file.
-Stream<dynamic> btcPriceStream() => btcPriceFile().asStream()
-  .map((file) => file.path)
-  .asyncExpand((path) => (Platform.isAndroid
-    ? PollingFileWatcher(path) : FileWatcher(path)).events)
-  .asyncMap((_) => readBtcPrice());
+/// A stream of updated BTC prices.
+Stream<dynamic> btcPriceStream() async* {
+  // yield the initial value
+  yield await readBtcPrice();
+
+  // yield a value whenever the file is modified
+  final path = (await btcPriceFile()).path;
+  final updates = (Platform.isAndroid
+      ? PollingFileWatcher(path) : FileWatcher(path)).events;
+  await for (final _ in updates) {
+    yield await readBtcPrice();
+  }
+}
 
 /// Reads the price from a data file.
 Future<dynamic> readBtcPrice() async {

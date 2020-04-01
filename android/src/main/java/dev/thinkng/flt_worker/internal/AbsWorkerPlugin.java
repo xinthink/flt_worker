@@ -87,19 +87,19 @@ public abstract class AbsWorkerPlugin implements FlutterPlugin, MethodCallHandle
     boolean handled = true;
     switch (call.method) {
       case METHOD_PREFIX + "enqueue":
-        doEnqueue(call, result);
+        enqueue(call, result);
         break;
       case METHOD_PREFIX + "cancelAllWorkByTag":
-        WorkManager.getInstance(context).cancelAllWorkByTag((String) call.arguments);
+        cancelAllWorkByTag(call, result);
         break;
       case METHOD_PREFIX + "cancelUniqueWork":
-        WorkManager.getInstance(context).cancelUniqueWork((String) call.arguments);
+        cancelUniqueWork(call, result);
         break;
       case METHOD_PREFIX + "cancelWorkById":
-        WorkManager.getInstance(context).cancelWorkById(UUID.fromString((String) call.arguments));
+        cancelWorkById(call, result);
         break;
       case METHOD_PREFIX + "cancelAllWork":
-        WorkManager.getInstance(context).cancelAllWork();
+        cancelAllWork(call, result);
         break;
       default:
         handled = false;
@@ -108,7 +108,7 @@ public abstract class AbsWorkerPlugin implements FlutterPlugin, MethodCallHandle
     return handled;
   }
 
-  private void doEnqueue(@NonNull MethodCall call, @NonNull final Result result) {
+  private void enqueue(@NonNull MethodCall call, @NonNull final Result result) {
     List<? extends WorkRequest> requests = WorkRequests.parseRequests(call.arguments);
     if (requests == null || requests.isEmpty()) {
       result.success(false);
@@ -116,7 +116,27 @@ public abstract class AbsWorkerPlugin implements FlutterPlugin, MethodCallHandle
     }
 
     Operation op = WorkManager.getInstance(context).enqueue(requests);
-    watchOperation(op, result, "enqueue work requests");
+    watchOperation(op, result, "enqueueWorkRequests");
+  }
+
+  private void cancelAllWorkByTag(@NonNull MethodCall call, @NonNull final Result result) {
+    Operation op = WorkManager.getInstance(context).cancelAllWorkByTag((String) call.arguments);
+    watchOperation(op, result, "cancelAllWorkByTag");
+  }
+
+  private void cancelUniqueWork(@NonNull MethodCall call, @NonNull final Result result) {
+    Operation op = WorkManager.getInstance(context).cancelUniqueWork((String) call.arguments);
+    watchOperation(op, result, "cancelUniqueWork");
+  }
+
+  private void cancelWorkById(@NonNull MethodCall call, @NonNull final Result result) {
+    Operation op = WorkManager.getInstance(context).cancelWorkById(UUID.fromString((String) call.arguments));
+    watchOperation(op, result, "cancelWorkById");
+  }
+
+  private void cancelAllWork(@NonNull MethodCall call, @NonNull final Result result) {
+    Operation op = WorkManager.getInstance(context).cancelAllWork();
+    watchOperation(op, result, "cancelAllWork");
   }
 
   /**

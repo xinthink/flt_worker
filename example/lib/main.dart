@@ -6,6 +6,7 @@ import 'package:flt_worker/flt_worker.dart';
 //import 'package:flt_worker/android.dart';
 //import 'package:flt_worker/ios.dart';
 
+import 'background_tasks_btc_prices.dart';
 import 'background_tasks_counter.dart';
 import 'work_manager_btc_prices.dart';
 import 'work_manager_counter.dart';
@@ -88,10 +89,19 @@ List<Widget> _bgTasksExamples(BuildContext context) => [
       ));
     },
   ),
+  RaisedButton(
+    child: const Text('Bitcoin price polling \n(BGAppRefreshTaskRequest)'),
+    onPressed: () {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (_) => BackgroundTasksBtcPrices(),
+      ));
+    },
+  ),
 ];
 
 /// iOS BGTasks test.
 ///
+/// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.example.btc_prices_task"]
 /// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.example.counter_task"]
 /// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.example.task1"]
 /// e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"dev.example.task2"]

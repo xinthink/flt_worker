@@ -1,4 +1,4 @@
-import 'package:flt_worker/work_manager.dart';
+import 'package:flt_worker/background_tasks.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -6,12 +6,12 @@ import 'btc_price_file.dart';
 
 /// An example for using low level `WorkManager` api on the Android platform,
 /// which polls Bitcoin price periodically every 900 seconds.
-class WorkManagerBtcPrices extends StatefulWidget {
+class BackgroundTasksBtcPrices extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _BtcPricesState();
 }
 
-class _BtcPricesState extends State<WorkManagerBtcPrices> {
+class _BtcPricesState extends State<BackgroundTasksBtcPrices> {
   @override
   void initState() {
     super.initState();
@@ -21,23 +21,26 @@ class _BtcPricesState extends State<WorkManagerBtcPrices> {
   @override
   void dispose() {
     // Comments out this line to keep the work running in background
-    cancelAllWorkByTag(kTagBtcPricesWork);
+    cancelTaskRequest(kTagBtcPricesWork);
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('Bitcoin Price'),
-    ),
-    body: SingleChildScrollView(
-      child: Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
-        child: _buildDashboard(),
+  Widget build(BuildContext context) {
+    _startPolling();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Bitcoin Price'),
       ),
-    ),
-  );
+      body: SingleChildScrollView(
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+          child: _buildDashboard(),
+        ),
+      ),
+    );
+  }
 
   /// Renders the latest Bitcoin price by watching a data file.
   Widget _buildDashboard() => StreamBuilder<dynamic>(
@@ -91,13 +94,7 @@ class _BtcPricesState extends State<WorkManagerBtcPrices> {
 
   /// Enqueues a work request to poll the price.
   void _startPolling() async {
-    await cancelAllWorkByTag(kTagBtcPricesWork); // cancel the previous work
-    await enqueueWorkRequest(const PeriodicWorkRequest(
-      repeatInterval: Duration(seconds: 30),
-      tags: [kTagBtcPricesWork],
-      constraints: WorkConstraints(
-        networkType: NetworkType.connected,
-      ),
-    ));
+    await cancelTaskRequest(kTagBtcPricesWork); // cancel the previous task
+    await submitTaskRequest(BGAppRefreshTaskRequest(kTagBtcPricesWork));
   }
 }

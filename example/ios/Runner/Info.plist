@@ -7,6 +7,7 @@
 		<string>com.example.task1</string>
 		<string>dev.example.task2</string>
 		<string>com.example.counter_task</string>
+		<string>com.example.btc_prices_task</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

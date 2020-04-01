@@ -1,4 +1,4 @@
-import 'package:flt_worker/ios.dart';
+import 'package:flt_worker/background_tasks.dart';
 import 'package:flutter/material.dart';
 
 import 'counter_file.dart';
@@ -54,7 +54,7 @@ class BackgroundTasksCounter extends StatelessWidget {
 
   /// Submit a background task to update the counter.
   void _increaseCounter(int counter) {
-    submitTaskRequest(BGProcessingTaskRequest("com.example.counter_task",
+    submitTaskRequest(BGProcessingTaskRequest(kTagCounterWork,
       input: <String, dynamic>{
         'counter': counter,
       },

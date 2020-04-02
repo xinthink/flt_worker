@@ -28,7 +28,7 @@ class _BtcPricesState extends State<WorkManagerBtcPrices> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text('Bitcoin Price'),
+      title: const Text('Bitcoin Price (WorkManager)'),
     ),
     body: SingleChildScrollView(
       child: Container(

@@ -30,7 +30,7 @@ class _BtcPricesState extends State<BackgroundTasksBtcPrices> {
     _startPolling();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bitcoin Price'),
+        title: const Text('Bitcoin Price (BackgroundTasks)'),
       ),
       body: SingleChildScrollView(
         child: Container(

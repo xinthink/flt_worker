@@ -8,7 +8,7 @@ class BackgroundTasksCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text('WorkManager Example'),
+      title: const Text('Counter (BackgroundTasks)'),
     ),
     body: SingleChildScrollView(
       child: Container(

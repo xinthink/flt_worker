@@ -1,14 +1,14 @@
-import 'package:flt_worker/work_manager.dart';
+import 'package:flt_worker/flt_worker.dart';
 import 'package:flutter/material.dart';
 
 import 'counter_file.dart';
 
 /// WorkManager api example for the Android platform.
-class WorkManagerCounter extends StatelessWidget {
+class Counter extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text('Counter (WorkManager)'),
+      title: const Text('Counter'),
     ),
     body: SingleChildScrollView(
       child: Container(
@@ -54,8 +54,8 @@ class WorkManagerCounter extends StatelessWidget {
 
   /// Enqueues a work request to update the counter.
   void _increaseCounter(int counter) {
-    enqueueWorkRequest(OneTimeWorkRequest(
-      tags: [kTagCounterWork],
+    enqueueWorkIntent(WorkIntent(
+      id: kTagCounterWork,
       constraints: WorkConstraints(
         networkType: NetworkType.notRequired,
       ),

@@ -2,6 +2,44 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'types.dart';
+
+export 'types.dart';
+
+/// Describes a work request.
+///
+/// The name `WorkIntent` is chosen to avoid conflict with the term `WorkRequest` on the Android platform.
+@immutable
+class WorkIntent {
+  /// The id of the work.
+  ///
+  /// TODO platform-specific info
+  final String id;
+
+  /// Tags for grouping work.
+  final Iterable<String> tags;
+
+  /// Input data of the work.
+  final Map<String, dynamic> input;
+
+  /// The duration of initial delay of the work.
+  final Duration initialDelay;
+
+  /// Constraints for the work to run.
+  final WorkConstraints constraints;
+
+  /// Instantiates a [WorkIntent] with an [id].
+  ///
+  /// Optional properties include [tags], [input] data and an [initialDelay].
+  const WorkIntent({
+    @required this.id,
+    this.tags,
+    this.input,
+    this.initialDelay,
+    this.constraints,
+  });
+}
+
 /// Payload of a background work.
 @immutable
 class WorkPayload {

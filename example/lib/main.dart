@@ -8,6 +8,7 @@ import 'package:flt_worker/flt_worker.dart';
 
 import 'background_tasks_btc_prices.dart';
 import 'background_tasks_counter.dart';
+import 'counter.dart';
 import 'work_manager_btc_prices.dart';
 import 'work_manager_counter.dart';
 import 'worker.dart';
@@ -38,8 +39,10 @@ class MyApp extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   RaisedButton(
-                    child: const Text('Counter \n(high level API)'),
-                    onPressed: () {},
+                    child: const Text('Counter\n(high level API)'),
+                    onPressed: () => Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => Counter(),
+                    )),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 48, bottom: 16),
@@ -63,26 +66,22 @@ class MyApp extends StatelessWidget {
 
 List<Widget> _workManagerExamples(BuildContext context) => [
   RaisedButton(
-    child: const Text('Counter \n(OneTimeWorkRequest)'),
-    onPressed: () {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (_) => WorkManagerCounter(),
-      ));
-    },
+    child: const Text('Counter\n(OneTimeWorkRequest)'),
+    onPressed: () => Navigator.push(context, MaterialPageRoute(
+      builder: (_) => WorkManagerCounter(),
+    )),
   ),
   RaisedButton(
-    child: const Text('Bitcoin price polling \n(PeriodicWorkRequest)'),
-    onPressed: () {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (_) => WorkManagerBtcPrices(),
-      ));
-    },
+    child: const Text('Bitcoin price polling\n(PeriodicWorkRequest)'),
+    onPressed: () => Navigator.push(context, MaterialPageRoute(
+      builder: (_) => WorkManagerBtcPrices(),
+    )),
   ),
 ];
 
 List<Widget> _bgTasksExamples(BuildContext context) => [
   RaisedButton(
-    child: const Text('Counter \n(BGProcessingTaskRequest)'),
+    child: const Text('Counter\n(BGProcessingTaskRequest)'),
     onPressed: () {
       Navigator.push(context, MaterialPageRoute(
         builder: (_) => BackgroundTasksCounter(),
@@ -90,7 +89,7 @@ List<Widget> _bgTasksExamples(BuildContext context) => [
     },
   ),
   RaisedButton(
-    child: const Text('Bitcoin price polling \n(BGAppRefreshTaskRequest)'),
+    child: const Text('Bitcoin price polling\n(BGAppRefreshTaskRequest)'),
     onPressed: () {
       Navigator.push(context, MaterialPageRoute(
         builder: (_) => BackgroundTasksBtcPrices(),

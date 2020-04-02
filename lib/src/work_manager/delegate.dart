@@ -5,6 +5,10 @@ import '../models.dart';
 Future<bool> enqueueWorkIntent(WorkIntent intent) =>
   enqueueWorkRequest(_parseWorkIntent(intent));
 
+Future<bool> cancelWork(String id) => cancelAllWorkByTag(id);
+
+Future<bool> wmCancelAllWork() => cancelAllWork();
+
 WorkRequest _parseWorkIntent(WorkIntent intent) => OneTimeWorkRequest(
   tags: [intent.id] + (intent.tags ?? []),
   input: intent.input,

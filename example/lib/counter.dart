@@ -27,7 +27,7 @@ class Counter extends StatelessWidget {
         RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            text: 'Increases the counter via an one-off work\n',
+            text: 'Increases the counter via an unified API on both platforms.\n',
             style: const TextStyle(
               color: Colors.black87,
               fontSize: 16,
@@ -56,12 +56,10 @@ class Counter extends StatelessWidget {
   void _increaseCounter(int counter) {
     enqueueWorkIntent(WorkIntent(
       id: kTagCounterWork,
-      constraints: WorkConstraints(
-        networkType: NetworkType.notRequired,
-      ),
       input: <String, dynamic>{
         'counter': counter,
       },
+      isProcessingTask: true,
     ));
   }
 }

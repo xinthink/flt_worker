@@ -28,6 +28,10 @@ class WorkIntent {
   /// Constraints for the work to run.
   final WorkConstraints constraints;
 
+  /// iOS only, requests to schedule a `BGProcessingTaskRequest`,
+  /// which defaults to `BGAppRefreshTaskRequest` if not specified.
+  final bool isProcessingTask;
+
   /// Instantiates a [WorkIntent] with an [id].
   ///
   /// Optional properties include [tags], [input] data and an [initialDelay].
@@ -37,6 +41,7 @@ class WorkIntent {
     this.input,
     this.initialDelay,
     this.constraints,
+    this.isProcessingTask,
   });
 }
 

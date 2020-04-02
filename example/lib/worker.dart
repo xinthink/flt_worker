@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flt_worker/flt_worker.dart';
-import 'package:flt_worker/background_tasks.dart' show submitTaskRequest, BGAppRefreshTaskRequest;
+import 'package:flt_worker/ios.dart' show submitTaskRequest, BGAppRefreshTaskRequest;
 
 import 'btc_price_file.dart';
 import 'counter_file.dart';

@@ -89,7 +89,6 @@ class PeriodicWorkRequest extends WorkRequest {
     Iterable<String> tags,
     Map<String, dynamic> input,
     Duration initialDelay,
-    int initialDelayMicros,
     WorkConstraints constraints,
     BackoffCriteria backoffCriteria,
   }) : super(

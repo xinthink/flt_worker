@@ -12,8 +12,6 @@
 
 @interface BGTaskMgrDelegate : NSObject
 
-@property (class, readonly, nonatomic) NSUserDefaults *userDefaults;
-
 @property (readonly, nonatomic) FlutterMethodChannel *methodChannel;
 
 /** Register background task indentifiers. */

@@ -13,10 +13,10 @@
 
 @interface BGTaskHandler : NSObject<FlutterPlugin>
 
-@property (class, readonly) BGTaskHandler *instance;
-@property (class, nonatomic) FuncRegisterPlugins registerPlugins;
+@property (class, readonly) BGTaskHandler * _Nonnull instance;
+@property (class, nonatomic) FuncRegisterPlugins _Nullable registerPlugins;
 
-- (void)handleBGTask:(BGTask * _Nonnull)task;
+- (void)handleBGTask:(BGTask * _Nonnull)task API_AVAILABLE(ios(13.0));
 
 @end
 

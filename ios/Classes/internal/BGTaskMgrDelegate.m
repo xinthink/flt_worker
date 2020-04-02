@@ -19,13 +19,15 @@
 
 // register background task indentifier/handler pairs
 + (void)registerBGTaskHandler {
-  NSArray *bgTaskIds = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"BGTaskSchedulerPermittedIdentifiers"];
-  for (NSString *taskId in bgTaskIds) {
-    [BGTaskScheduler.sharedScheduler registerForTaskWithIdentifier:taskId
-                                                        usingQueue:dispatch_get_main_queue()
-                                                     launchHandler:^(BGTask * _Nonnull task) {
-      [BGTaskHandler.instance handleBGTask:task];
-    }];
+  if (@available(iOS 13.0, *)) {
+    NSArray *bgTaskIds = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"BGTaskSchedulerPermittedIdentifiers"];
+    for (NSString *taskId in bgTaskIds) {
+      [BGTaskScheduler.sharedScheduler registerForTaskWithIdentifier:taskId
+                                                          usingQueue:dispatch_get_main_queue()
+                                                       launchHandler:^(BGTask * _Nonnull task) {
+        [BGTaskHandler.instance handleBGTask:task];
+      }];
+    }
   }
 }
  
@@ -76,27 +78,29 @@
   BOOL handled = YES;
   NSString *method = call.method;
   id args = call.arguments;
-  if ([@API_METHOD(submitTaskRequest) isEqualToString:method]) {
-    BGTaskRequest *req = [self parseTaskRequest:args];
-    BOOL submitted = [BGTaskScheduler.sharedScheduler submitTaskRequest:req error:nil];
-    result(@(submitted));
-  } else if ([@API_METHOD(cancelTaskRequest) isEqualToString:method]) {
-    [BGTaskScheduler.sharedScheduler cancelTaskRequestWithIdentifier:args];
-    result(nil);
-  } else if ([@API_METHOD(cancelAllTaskRequests) isEqualToString:method]) {
-    [BGTaskScheduler.sharedScheduler cancelAllTaskRequests];
-    result(nil);
-  } else if ([@API_METHOD(simulateLaunchTask) isEqualToString:method]) {
-    [self simulateLaunchTask:args];
-    result(nil);
-  } else {
-    handled = NO;
+  if (@available(iOS 13.0, *)) {
+    if ([@API_METHOD(submitTaskRequest) isEqualToString:method]) {
+      BGTaskRequest *req = [self parseTaskRequest:args];
+      BOOL submitted = [BGTaskScheduler.sharedScheduler submitTaskRequest:req error:nil];
+      result(@(submitted));
+    } else if ([@API_METHOD(cancelTaskRequest) isEqualToString:method]) {
+      [BGTaskScheduler.sharedScheduler cancelTaskRequestWithIdentifier:args];
+      result(nil);
+    } else if ([@API_METHOD(cancelAllTaskRequests) isEqualToString:method]) {
+      [BGTaskScheduler.sharedScheduler cancelAllTaskRequests];
+      result(nil);
+    } else if ([@API_METHOD(simulateLaunchTask) isEqualToString:method]) {
+      [self simulateLaunchTask:args];
+      result(nil);
+    } else {
+      handled = NO;
+    }
   }
   
   return handled;
 }
 
-- (BGTaskRequest*)parseTaskRequest:(id)arguments {
+- (BGTaskRequest*)parseTaskRequest:(id)arguments API_AVAILABLE(ios(13.0)){
   BGTaskRequest *req;
   NSString *type = arguments[@"type"];
   NSString *identifier = arguments[@"identifier"];

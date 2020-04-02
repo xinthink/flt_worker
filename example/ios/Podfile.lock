@@ -24,7 +24,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_macos/ios"
 
 SPEC CHECKSUMS:
-  flt_worker: f24358786521d942e4dfd72e9c13dbe89fbd0309
+  flt_worker: 09a85dc9bfc12106faa15f7c00b26f85cbccb3e6
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0

@@ -1,3 +1,1 @@
-## 0.0.1
-
-* TODO: Describe initial release.
+:point_right: [Release History](https://github.com/xinthink/flt_worker/releases)

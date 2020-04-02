@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flt_worker/flt_worker.dart';
-import 'package:flt_worker/ios.dart' show submitTaskRequest, BGAppRefreshTaskRequest;
 
 import 'btc_price_file.dart';
 import 'counter_file.dart';
@@ -27,10 +26,14 @@ Future<void> _fetchBtcPrice() async {
     await fetchBtcPrice();
   } finally {
     if (Platform.isIOS) {
+      // periodic work is not supported natively on iOS,
+      // so we have to schedule it again after the current one is marked as complete
       Future.delayed(Duration(milliseconds: 50), () =>
-        submitTaskRequest(BGAppRefreshTaskRequest(kTagBtcPricesWork,
-          earliestBeginDate: DateTime.now().add(Duration(seconds: 30)),
-        )));
+        enqueueWorkIntent(const WorkIntent(
+          identifier: kTagBtcPricesWork,
+          initialDelay: Duration(seconds: 60),
+        ))
+      );
     }
   }
 }

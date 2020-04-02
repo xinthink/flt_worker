@@ -3,9 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
-import '../types.dart';
+import '../constraints.dart';
 
-export '../types.dart';
+export '../constraints.dart';
 
 /// An abstract class representing a work request.
 @immutable

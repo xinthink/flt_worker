@@ -1,13 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-
 import 'package:flt_worker/flt_worker.dart';
-//import 'package:flt_worker/android.dart';
-//import 'package:flt_worker/ios.dart';
+import 'package:flutter/material.dart';
 
 import 'background_tasks_btc_prices.dart';
 import 'background_tasks_counter.dart';
+import 'btc_prices.dart';
 import 'counter.dart';
 import 'work_manager_btc_prices.dart';
 import 'work_manager_counter.dart';
@@ -38,10 +36,23 @@ class MyApp extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
+                  const Text('High level API examples',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   RaisedButton(
-                    child: const Text('Counter\n(high level API)'),
+                    child: const Text('Counter'),
                     onPressed: () => Navigator.push(context, MaterialPageRoute(
                       builder: (_) => Counter(),
+                    )),
+                  ),
+                  RaisedButton(
+                    child: const Text('Bitcoin price polling'),
+                    onPressed: () => Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => BtcPrices(),
                     )),
                   ),
                   Padding(

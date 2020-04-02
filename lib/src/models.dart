@@ -2,21 +2,24 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'types.dart';
+import 'constraints.dart';
 
-export 'types.dart';
+export 'constraints.dart';
 
 /// Describes a work request.
 ///
 /// The name `WorkIntent` is chosen to avoid conflict with the term `WorkRequest` on the Android platform.
 @immutable
 class WorkIntent {
-  /// The id of the work.
+  /// The identifier of the work.
   ///
+  /// Will be added to [tags] implicitly, which can be retrieved from [WorkPayload].
   /// TODO platform-specific info
-  final String id;
+  final String identifier;
 
   /// Tags for grouping work.
+  ///
+  /// Tags except [identifier] are only available on **Android**.
   final Iterable<String> tags;
 
   /// Input data of the work.
@@ -28,30 +31,44 @@ class WorkIntent {
   /// Constraints for the work to run.
   final WorkConstraints constraints;
 
-  /// iOS only, requests to schedule a `BGProcessingTaskRequest`,
+  /// **iOS** only, requests to schedule a `BGProcessingTaskRequest`,
   /// which defaults to `BGAppRefreshTaskRequest` if not specified.
   final bool isProcessingTask;
 
-  /// Instantiates a [WorkIntent] with an [id].
+  /// **Android** only. The repeat interval of a periodic work request.
+  final Duration repeatInterval;
+
+  /// **Android** only. The duration for which the work repeats from the end of the [repeatInterval].
+  ///
+  /// Note that flex intervals are ignored for certain Android OS versions (in particular, API 23).
+  final Duration flexInterval;
+
+  /// Instantiates a [WorkIntent] with an [identifier].
   ///
   /// Optional properties include [tags], [input] data and an [initialDelay].
   const WorkIntent({
-    @required this.id,
+    @required this.identifier,
     this.tags,
     this.input,
     this.initialDelay,
     this.constraints,
     this.isProcessingTask,
+    this.repeatInterval,
+    this.flexInterval,
   });
 }
 
 /// Payload of a background work.
 @immutable
 class WorkPayload {
-  /// Identifier of the work.
+  /// Id of the work.
+  ///
+  /// It's the BGTask identifier on iOS, and work UUID on Android.
   final String id;
 
-  /// Tags of the work, available on Android only.
+  /// Tags of the work.
+  ///
+  /// Tags except [identifier] are only available on **Android**.
   final Iterable<String> tags;
 
   /// Input of the work.

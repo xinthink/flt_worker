@@ -1,15 +1,18 @@
+import 'package:flutter/foundation.dart';
+
 import 'background_tasks.dart';
 import '../models.dart';
 
 /// Enqueues a request to work in the background.
 Future<bool> enqueueWorkIntent(WorkIntent intent) =>
-  submitTaskRequest(_parseWorkIntent(intent));
+  submitTaskRequest(parseWorkIntent(intent));
 
 Future<bool> cancelWork(String id) => cancelTaskRequest(id).then((_) => true);
 
 Future<bool> cancelAllWork() => cancelAllTaskRequests().then((_) => true);
 
-BGTaskRequest _parseWorkIntent(WorkIntent intent) {
+@visibleForTesting
+BGTaskRequest parseWorkIntent(WorkIntent intent) {
   bool network;
   if (intent.constraints?.networkType != null) {
     network = intent.constraints.networkType != NetworkType.notRequired;
@@ -20,14 +23,14 @@ BGTaskRequest _parseWorkIntent(WorkIntent intent) {
 
   return intent.isProcessingTask == true
     ? BGProcessingTaskRequest(
-      intent.id,
+      intent.identifier,
       input: intent.input,
       earliestBeginDate: earliestBeginDate,
       requiresExternalPower: intent.constraints?.charging,
       requiresNetworkConnectivity: network,
     )
     : BGAppRefreshTaskRequest(
-      intent.id,
+      intent.identifier,
       input: intent.input,
       earliestBeginDate: earliestBeginDate,
     );

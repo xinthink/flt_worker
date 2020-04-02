@@ -30,7 +30,7 @@ Future<void> initializeWorker(WorkerFn worker) =>
 final Future<bool> Function(WorkIntent intent) enqueueWorkIntent =
   Platform.isAndroid ? wm.enqueueWorkIntent : bg.enqueueWorkIntent;
 
-/// Cancels all unfinished work with the given [id].
+/// Cancels all unfinished work with the given [identifier].
 ///
 /// Note that cancellation is a best-effort policy and work that is already executing may continue to run.
 final Future<bool> Function(String id) cancelWork =

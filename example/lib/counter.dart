@@ -55,7 +55,7 @@ class Counter extends StatelessWidget {
   /// Enqueues a work request to update the counter.
   void _increaseCounter(int counter) {
     enqueueWorkIntent(WorkIntent(
-      id: kTagCounterWork,
+      identifier: kTagCounterWork,
       input: <String, dynamic>{
         'counter': counter,
       },

@@ -10,7 +10,7 @@ jobs:
     - uses: subosito/flutter-action@v1
     - name: Check
       run: |
-        flutter analyze
+        cd example && flutter analyze && cd ..
         flutter test
     - name: notification
       if: cancelled() == false

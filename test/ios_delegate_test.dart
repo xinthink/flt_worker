@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flt_worker/flt_worker.dart';
 import 'package:flt_worker/ios.dart';
 import 'package:flt_worker/src/background_tasks/delegate.dart';
@@ -37,8 +39,9 @@ void main() {
       ),
     );
     var req = parseWorkIntent(intent) as BGProcessingTaskRequest;
-    expect(req.earliestBeginDate.millisecondsSinceEpoch / 1000,
-        now.add(Duration(minutes: 11)).millisecondsSinceEpoch / 1000);
+    expect(
+        (req.earliestBeginDate.millisecondsSinceEpoch - now.add(Duration(minutes: 11)).millisecondsSinceEpoch).abs(),
+        lessThanOrEqualTo(1000));
     expect(req.requiresNetworkConnectivity, isTrue);
     expect(req.requiresExternalPower, isTrue);
 

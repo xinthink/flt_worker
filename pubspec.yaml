@@ -1,6 +1,6 @@
 name: flt_worker
 description: The flt_worker plugin allows you to schedule and execute Dart-written background tasks in a dedicated isolate, by utilizing the WorkManager API on Android, and the BackgroundTasks API on iOS 13, respectively.
-version: 0.1.0
+version: 0.1.0-dev
 homepage: https://github.com/xinthink/flt_worker/
 repository: https://github.com/xinthink/flt_worker/
 

@@ -12,8 +12,8 @@ jobs:
     - uses: subosito/flutter-action@v1
     - name: Publish
       run: |
-        dartfmt -l 80 -w .
-        flutter packages get
+#        dartfmt -l 80 -w .  FIXME: command not found
+        flutter pub get
         echo "${{ secrets.PUB_CREDENTIALS }}" | base64 --decode > ~/.pub-cache/credentials.json
         pub publish --force
     - name: notification

@@ -16,7 +16,7 @@ dependencies:
   flt_worker: ^0.1.0
 ```
 
-A worker is running in a separate instance of Flutter engine. Any plugin needed in the worker has to be registered again. In the following example, the `path_provider` plugin is registered for the background isolate.
+A worker is running in a separate instance of Flutter engine. Any plugins needed in the worker have to be registered again. In the following example, the `path_provider` plugin is registered for the background isolate.
 
 iOS:
 ```obj-c
@@ -49,7 +49,7 @@ public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
 
 Fortunately, `flt_worker` itself is always available for the worker, so you don't have to register it again.
 
-One more thing have to be done if you're working on iOS: all task identifiers must be registered before you can subimit any `BGTaskRequest`.
+One more thing has to be done if you're working on iOS: all task identifiers must be registered before you can subimit any `BGTaskRequest`.
 
 Add lines like this to the `Info.plist` file:
 
@@ -116,13 +116,13 @@ The name of `WorkIntent` is chosen to avoid conflict with the term `WorkRequest`
 
 Please see the documentation and also the example app to find out how to schedule different kinds of background work.
 
-## High-level vs. low-level API
+## High-level vs. Low-level APIs
 
-The background processing strategy and API is quite different on the Android and iOS platforms. The `flt_worker` plugin manages to provide a unified yet simplified API for general tasks, as the above example.
+The background processing strategies and APIs are quite different on the Android and iOS platforms. The `flt_worker` plugin manages to provide a unified yet simplified API for general tasks, as the above example.
 
 However, to leverage the full power of each platform's background processing features, you may consider the low-level platform-specific APIs.
 
-For example, you can schedule a periodic work using the `WorkManager` API on an Android device:
+For example, you can schedule a periodic work using the `WorkManager` APIs on an Android device:
 
 ```dart
 import 'package:flt_worker/android.dart';

@@ -26,21 +26,18 @@ class _BtcPricesState extends State<BackgroundTasksBtcPrices> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    _startPolling();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bitcoin Price (BackgroundTasks)'),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: const Text('Bitcoin Price (BackgroundTasks)'),
+    ),
+    body: SingleChildScrollView(
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+        child: _buildDashboard(),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
-          child: _buildDashboard(),
-        ),
-      ),
-    );
-  }
+    ),
+  );
 
   /// Renders the latest Bitcoin price by watching a data file.
   Widget _buildDashboard() => StreamBuilder<dynamic>(

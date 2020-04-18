@@ -10,6 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - uses: subosito/flutter-action@v1
+    - name: Format
+      run: |
+        $FLUTTER_HOME/bin/cache/dart-sdk/bin/dartfmt -l 80 -w .
     - name: Publish
       run: |
         flutter pub get

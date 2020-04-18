@@ -12,7 +12,6 @@ jobs:
       run: |
         cd example && flutter analyze && cd ..
         flutter test
-        ls $FLUTTER_HOME/bin/cache/dart-sdk
     - name: notification
       if: cancelled() == false
       uses: xinthink/action-telegram@v1.1

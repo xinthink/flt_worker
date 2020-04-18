@@ -97,6 +97,7 @@ class _BtcPricesState extends State<BtcPrices> {
       repeatInterval: Duration(seconds: 60), // TODO minimum is 900 on Android
       constraints: WorkConstraints(
         networkType: NetworkType.connected,
+        batteryNotLow: true,
       ),
     ));
   }

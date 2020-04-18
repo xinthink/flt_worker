@@ -13,8 +13,10 @@ export 'constraints.dart';
 class WorkIntent {
   /// The identifier of the work.
   ///
-  /// Will be added to [tags] implicitly, which can be retrieved from [WorkPayload].
-  /// TODO platform-specific info
+  /// Will be prepended to [tags] implicitly, which can be retrieved from [WorkPayload] when handling the work.
+  ///
+  /// For the iOS platform, all `identifier`s must be registered in the `Info.plist` file,
+  /// please see the [integration guide](https://github.com/xinthink/flt_worker#integration) for more details.
   final String identifier;
 
   /// Tags for grouping work.
@@ -23,6 +25,10 @@ class WorkIntent {
   final Iterable<String> tags;
 
   /// Input data of the work.
+  ///
+  /// Please notice that on iOS, the input data is cached with the key of `identifier`,
+  /// if you schedule a work before the previous one with the same `identifier` is complete,
+  /// cached input of the key `identifier` will be overwritten.
   final Map<String, dynamic> input;
 
   /// The duration of initial delay of the work.
@@ -31,8 +37,8 @@ class WorkIntent {
   /// Constraints for the work to run.
   final WorkConstraints constraints;
 
-  /// **iOS** only, requests to schedule a `BGProcessingTaskRequest`,
-  /// which defaults to `BGAppRefreshTaskRequest` if not specified.
+  /// **iOS** only, if `true`, requests to schedule a `BGProcessingTaskRequest`,
+  /// otherwise defaults to `BGAppRefreshTaskRequest`.
   final bool isProcessingTask;
 
   /// **Android** only. The repeat interval of a periodic work request.
@@ -63,7 +69,11 @@ class WorkIntent {
 class WorkPayload {
   /// Id of the work.
   ///
-  /// It's the BGTask identifier on iOS, and work UUID on Android.
+  /// It's the BGTask identifier on iOS, and work **UUID** on Android.
+  ///
+  /// Please notice that it's **NOT** the `identifier` you specify in the `WorkIntent`
+  /// when you schedule the work on Android devices.
+  /// Retrieves the `identifier` from `tags` instead.
   final String id;
 
   /// Tags of the work.

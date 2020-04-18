@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-/// Constraints for a [WorkRequest].
+/// Constraints for a [WorkIntent].
 @immutable
 class WorkConstraints {
   /// Whether the work requires a particular [NetworkType] to run.

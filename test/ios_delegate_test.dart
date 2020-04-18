@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flt_worker/flt_worker.dart';
 import 'package:flt_worker/ios.dart';
 import 'package:flt_worker/src/background_tasks/delegate.dart';

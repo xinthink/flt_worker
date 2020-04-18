@@ -26,7 +26,7 @@ Future<T> get<T>(uri, {
   BodyParser<T> bodyParser,
   ErrorCheck errorCheck,
 }) {
-  print("GET $uri headers=$headers");
+  print('GET $uri headers=$headers');
   return http.get(uri, headers: headers)
       .then(errorCheck ?? _checkHttpError)
       .then((resp) => (bodyParser ?? ignoreBody)(resp.body));
@@ -55,7 +55,7 @@ Future<T> post<T>(uri, {
   BodyParser<T> bodyParser,
   ErrorCheck errorCheck,
 }) {
-  print("POST $uri headers=$headers");
+  print('POST $uri headers=$headers');
   return http.post(uri,
     body: body,
     encoding: encoding,
@@ -91,14 +91,14 @@ Future<dynamic> postJson(uri, {
 /// Checking HTTP status code for failures
 http.Response _checkHttpError(http.Response resp) {
   if (resp.statusCode < 200 || resp.statusCode >= 300) {
-    throw HttpException("${resp.request.method} ${resp.request.url} failed: ${resp.statusCode}");
+    throw HttpException('${resp.request.method} ${resp.request.url} failed: ${resp.statusCode}');
   }
   return resp;
 }
 
 /// Merge [extra] headers into the [base] one
 Map<String, String> _mergeHeaders(Map<String, String> base, Map<String, String> extra) {
-  final headers = Map<String, String>();
+  final headers = <String, String>{};
   if (base != null) headers.addAll(base);
   if (extra != null) headers.addAll(extra);
   return headers;

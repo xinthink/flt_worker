@@ -11,7 +11,7 @@ const METHOD_PREFIX = 'FltWorkerPlugin';
 typedef WorkerFn = Future<void> Function(WorkPayload payload);
 
 /// The shared method channel for api calls
-const apiChannel = const MethodChannel(CHANNEL_NAME);
+const apiChannel = MethodChannel(CHANNEL_NAME);
 
 /// Returns the raw handle of the [callback] function, throws if it doesn't exist.
 int ensureRawHandle(Function callback) {

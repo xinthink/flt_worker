@@ -18,7 +18,7 @@ BGTaskRequest parseWorkIntent(WorkIntent intent) {
     network = intent.constraints.networkType != NetworkType.notRequired;
   }
 
-  DateTime earliestBeginDate = intent.initialDelay != null
+  final earliestBeginDate = intent.initialDelay != null
     ? DateTime.now().add(intent.initialDelay) : null;
 
   return intent.isProcessingTask == true

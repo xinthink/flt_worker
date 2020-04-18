@@ -15,7 +15,7 @@ jobs:
         $FLUTTER_HOME/bin/cache/dart-sdk/bin/dartfmt -l 80 -w .
     - name: Publish
       run: |
-        flutter pub get
+        mkdir ~/.pub-cache/
         echo "${{ secrets.PUB_CREDENTIALS }}" | base64 --decode > ~/.pub-cache/credentials.json
         pub publish --force
     - name: notification

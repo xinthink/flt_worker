@@ -146,7 +146,7 @@ final class WorkRequests {
 
     if (constraintsJson.get("networkType") != null) {
       builder.setRequiredNetworkType(
-          NetworkType.values()[(Integer) constraintsJson.get("networkType")]);
+          NetworkType.valueOf((String) constraintsJson.get("networkType")));
     }
     if (constraintsJson.get("batteryNotLow") != null) {
       builder.setRequiresBatteryNotLow((Boolean) constraintsJson.get("batteryNotLow"));

@@ -50,7 +50,7 @@ class WorkConstraints {
 
   /// Serializes this constraints into a json object.
   Map<String, dynamic> toJson() => {
-    'networkType': networkType?.index,
+    'networkType': networkType == null ? null : _enumToSnakeCaseString(networkType),
     'batteryNotLow': batteryNotLow,
     'charging': charging,
     'deviceIdle': deviceIdle,
@@ -75,3 +75,10 @@ enum NetworkType {
   /// An unmetered network connection is required for this work.
   unmetered,
 }
+
+String _enumToSnakeCaseString(NetworkType networkType) => networkType
+    .toString()
+    .split('.')
+    .last
+    .replaceAllMapped(RegExp(r'(?<=[a-z])[A-Z]'), (m) => ('_' + m.group(0)))
+    .toUpperCase();

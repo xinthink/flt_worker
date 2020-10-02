@@ -93,7 +93,7 @@ public class WorkRequestsTest {
   @Test
   public void parseConstraints() {
     Map<String, Object> constraintsJson = new HashMap<>();
-    constraintsJson.put("networkType", NetworkType.NOT_ROAMING.ordinal());
+    constraintsJson.put("networkType", NetworkType.NOT_ROAMING.toString());
     constraintsJson.put("batteryNotLow", true);
     constraintsJson.put("charging", null);
     constraintsJson.put("deviceIdle", true);

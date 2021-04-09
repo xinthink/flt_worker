@@ -13,7 +13,7 @@ Future<bool> wmCancelAllWork() => cancelAllWork();
 
 @visibleForTesting
 WorkRequest parseWorkIntent(WorkIntent intent) {
-  final tags = [intent.identifier] + (intent.tags ?? []);
+  final tags = [intent.identifier] + (intent.tags as List<String>? ?? []);
 
   return intent.repeatInterval != null
   ? PeriodicWorkRequest(
@@ -21,7 +21,7 @@ WorkRequest parseWorkIntent(WorkIntent intent) {
     input: intent.input,
     initialDelay: intent.initialDelay,
     constraints: intent.constraints,
-    repeatInterval: intent.repeatInterval,
+    repeatInterval: intent.repeatInterval!,
     flexInterval: intent.flexInterval,
   )
   : OneTimeWorkRequest(

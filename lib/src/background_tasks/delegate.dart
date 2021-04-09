@@ -13,13 +13,13 @@ Future<bool> cancelAllWork() => cancelAllTaskRequests().then((_) => true);
 
 @visibleForTesting
 BGTaskRequest parseWorkIntent(WorkIntent intent) {
-  bool network;
+  bool? network;
   if (intent.constraints?.networkType != null) {
-    network = intent.constraints.networkType != NetworkType.notRequired;
+    network = intent.constraints!.networkType != NetworkType.notRequired;
   }
 
   final earliestBeginDate = intent.initialDelay != null
-    ? DateTime.now().add(intent.initialDelay) : null;
+    ? DateTime.now().add(intent.initialDelay!) : null;
 
   return intent.isProcessingTask == true
     ? BGProcessingTaskRequest(

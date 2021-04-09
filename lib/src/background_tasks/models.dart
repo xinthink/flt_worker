@@ -14,10 +14,10 @@ abstract class BGTaskRequest {
   ///
   /// Setting the property indicates that the background task shouldn’t start any earlier than this date.
   /// However, the system doesn't guarantee launching the task at the specified date, but only that it won’t begin sooner.
-  final DateTime earliestBeginDate;
+  final DateTime? earliestBeginDate;
 
   /// Input data of the task.
-  final Map<String, dynamic> input;
+  final Map<String, dynamic>? input;
 
   /// Initializes a [BGTaskRequest] instance with the given [identifier].
   ///
@@ -43,8 +43,8 @@ class BGAppRefreshTaskRequest extends BGTaskRequest {
   /// Instantiates a [BGAppRefreshTaskRequest] with the task [identifier]
   /// and an optional [earliestBeginDate].
   const BGAppRefreshTaskRequest(String identifier, {
-    DateTime earliestBeginDate,
-    Map<String, dynamic> input,
+    DateTime? earliestBeginDate,
+    Map<String, dynamic>? input,
   }) : super(identifier, earliestBeginDate: earliestBeginDate, input: input);
 }
 
@@ -52,17 +52,17 @@ class BGAppRefreshTaskRequest extends BGTaskRequest {
 @immutable
 class BGProcessingTaskRequest extends BGTaskRequest {
   /// Specifies if the processing task requires a device connected to power.
-  final bool requiresExternalPower;
+  final bool? requiresExternalPower;
 
   /// Specifies if the processing task requires network connectivity.
-  final bool requiresNetworkConnectivity;
+  final bool? requiresNetworkConnectivity;
 
   /// Instantiates a [BGProcessingTaskRequest] with the task [identifier].
   ///
   /// and an optional [earliestBeginDate].
   const BGProcessingTaskRequest(String identifier, {
-    DateTime earliestBeginDate,
-    Map<String, dynamic> input,
+    DateTime? earliestBeginDate,
+    Map<String, dynamic>? input,
     this.requiresExternalPower,
     this.requiresNetworkConnectivity,
   }) : super(identifier, earliestBeginDate: earliestBeginDate, input: input);

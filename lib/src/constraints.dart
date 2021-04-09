@@ -8,21 +8,21 @@ class WorkConstraints {
   /// The default value is dependent on the native `WorkManager`,
   /// which should be [NetworkType.notRequired] according to
   /// the [documentation](https://developer.android.com/reference/androidx/work/Constraints.Builder?hl=en#setRequiredNetworkType(androidx.work.NetworkType)).
-  final NetworkType networkType;
+  final NetworkType? networkType;
 
   /// Whether device battery should be at an acceptable level for the work to run.
   ///
   /// The default value is dependent on the native `WorkManager`,
   /// which should be `false` according to
   /// the [documentation](https://developer.android.com/reference/androidx/work/Constraints.Builder?hl=en#setRequiresBatteryNotLow(boolean)).
-  final bool batteryNotLow;
+  final bool? batteryNotLow;
 
   /// Whether device should be charging for the work to run.
   ///
   /// The default value is dependent on the native `WorkManager`,
   /// which should be `false` according to
   /// the [documentation](https://developer.android.com/reference/androidx/work/Constraints.Builder?hl=en#setRequiresCharging(boolean)).
-  final bool charging;
+  final bool? charging;
 
   /// Whether device should be idle for the work to run.
   ///
@@ -30,14 +30,14 @@ class WorkConstraints {
   /// The default value is dependent on the native `WorkManager`,
   /// which should be `false` according to
   /// the [documentation](https://developer.android.com/reference/androidx/work/Constraints.Builder?hl=en#setRequiresDeviceIdle(boolean)).
-  final bool deviceIdle;
+  final bool? deviceIdle;
 
   /// Whether the work requires device's storage should be at an acceptable level.
   ///
   /// The default value is dependent on the native `WorkManager`,
   /// which should be `false` according to
   /// the [documentation](https://developer.android.com/reference/androidx/work/Constraints.Builder?hl=en#setRequiresStorageNotLow(boolean)).
-  final bool storageNotLow;
+  final bool? storageNotLow;
 
   /// Creates constraints for a [WorkRequest].
   const WorkConstraints({

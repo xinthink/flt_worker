@@ -36,7 +36,7 @@ void main() {
     expect(req, isA<PeriodicWorkRequest>());
     expect(req.tags, ['work2', 'periodic']);
     expect((req as PeriodicWorkRequest).repeatInterval, Duration(hours: 4));
-    expect((req as PeriodicWorkRequest).flexInterval, Duration(minutes: 1));
+    expect(req.flexInterval, Duration(minutes: 1));
   });
 
   test('model tranformation with constraints', () {
@@ -47,7 +47,7 @@ void main() {
       constraints: WorkConstraints(),
     );
     var req = parseWorkIntent(intent);
-    var constraints = req.constraints;
+    var constraints = req.constraints!;
     expect(req.initialDelay, Duration(seconds: 59));
     expect(constraints, isNotNull);
     expect(constraints.batteryNotLow, isNull);
@@ -67,7 +67,7 @@ void main() {
       ),
     );
     req = parseWorkIntent(intent);
-    constraints = req.constraints;
+    constraints = req.constraints!;
     expect(constraints.batteryNotLow, isTrue);
     expect(constraints.charging, isFalse);
     expect(constraints.deviceIdle, isTrue);

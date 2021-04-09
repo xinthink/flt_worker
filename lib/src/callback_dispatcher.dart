@@ -18,15 +18,13 @@ void callbackDispatcher() {
 /// Run the specified function in the background isoloate.
 Future<dynamic> _executeBackgroundTask(MethodCall call) {
   final args = call.arguments;
-  WorkerFn callback;
-  Map<String, dynamic> payload;
+  WorkerFn? callback;
+  late Map<String, dynamic> payload;
 
   if (args.isNotEmpty) {
     final handle = CallbackHandle.fromRawHandle(args[0]);
     payload = Map.castFrom(args[1]);
-    if (handle != null) {
-      callback = PluginUtilities.getCallbackFromHandle(handle);
-    }
+    callback = PluginUtilities.getCallbackFromHandle(handle) as Future<void> Function(WorkPayload)?;
   }
 
   if (callback != null) {

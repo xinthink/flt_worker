@@ -22,7 +22,7 @@ void main() {
     expect(req, isA<BGProcessingTaskRequest>());
     expect(req.identifier, 'work2');
     expect((req as BGProcessingTaskRequest).requiresNetworkConnectivity, isNull);
-    expect((req as BGProcessingTaskRequest).requiresExternalPower, isNull);
+    expect(req.requiresExternalPower, isNull);
   });
 
   test('parse BGProcessingTaskRequest with constraints', () {
@@ -38,7 +38,7 @@ void main() {
     );
     var req = parseWorkIntent(intent) as BGProcessingTaskRequest;
     expect(
-        (req.earliestBeginDate.millisecondsSinceEpoch - now.add(Duration(minutes: 11)).millisecondsSinceEpoch).abs(),
+        (req.earliestBeginDate!.millisecondsSinceEpoch - now.add(Duration(minutes: 11)).millisecondsSinceEpoch).abs(),
         lessThanOrEqualTo(1000));
     expect(req.requiresNetworkConnectivity, isTrue);
     expect(req.requiresExternalPower, isTrue);

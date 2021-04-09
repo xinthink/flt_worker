@@ -44,7 +44,7 @@ class BackgroundTasksCounter extends StatelessWidget {
             ],
           ),
         ),
-        RaisedButton(
+        TextButton(
           child: const Text('Count'),
           onPressed: () => _increaseCounter(snapshot.data),
         ),

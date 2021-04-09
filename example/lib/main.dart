@@ -52,13 +52,13 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  RaisedButton(
+                  TextButton(
                     child: const Text('Counter'),
                     onPressed: () => Navigator.push(context, MaterialPageRoute(
                       builder: (_) => Counter(),
                     )),
                   ),
-                  RaisedButton(
+                  TextButton(
                     child: const Text('Bitcoin price polling'),
                     onPressed: () => Navigator.push(context, MaterialPageRoute(
                       builder: (_) => BtcPrices(),
@@ -85,13 +85,13 @@ class MyApp extends StatelessWidget {
 }
 
 List<Widget> _workManagerExamples(BuildContext context) => [
-  RaisedButton(
+  TextButton(
     child: const Text('Counter\n(OneTimeWorkRequest)'),
     onPressed: () => Navigator.push(context, MaterialPageRoute(
       builder: (_) => WorkManagerCounter(),
     )),
   ),
-  RaisedButton(
+  TextButton(
     child: const Text('Bitcoin price polling\n(PeriodicWorkRequest)'),
     onPressed: () => Navigator.push(context, MaterialPageRoute(
       builder: (_) => WorkManagerBtcPrices(),
@@ -100,7 +100,7 @@ List<Widget> _workManagerExamples(BuildContext context) => [
 ];
 
 List<Widget> _bgTasksExamples(BuildContext context) => [
-  RaisedButton(
+  TextButton(
     child: const Text('Counter\n(BGProcessingTaskRequest)'),
     onPressed: () {
       Navigator.push(context, MaterialPageRoute(
@@ -108,7 +108,7 @@ List<Widget> _bgTasksExamples(BuildContext context) => [
       ));
     },
   ),
-  RaisedButton(
+  TextButton(
     child: const Text('Bitcoin price polling\n(BGAppRefreshTaskRequest)'),
     onPressed: () {
       Navigator.push(context, MaterialPageRoute(

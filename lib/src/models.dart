@@ -22,38 +22,38 @@ class WorkIntent {
   /// Tags for grouping work.
   ///
   /// Tags except [identifier] are only available on **Android**.
-  final Iterable<String> tags;
+  final Iterable<String>? tags;
 
   /// Input data of the work.
   ///
   /// Please notice that on iOS, the input data is cached with the key of `identifier`,
   /// if you schedule a work before the previous one with the same `identifier` is complete,
   /// cached input of the key `identifier` will be overwritten.
-  final Map<String, dynamic> input;
+  final Map<String, dynamic>? input;
 
   /// The duration of initial delay of the work.
-  final Duration initialDelay;
+  final Duration? initialDelay;
 
   /// Constraints for the work to run.
-  final WorkConstraints constraints;
+  final WorkConstraints? constraints;
 
   /// **iOS** only, if `true`, requests to schedule a `BGProcessingTaskRequest`,
   /// otherwise defaults to `BGAppRefreshTaskRequest`.
-  final bool isProcessingTask;
+  final bool? isProcessingTask;
 
   /// **Android** only. The repeat interval of a periodic work request.
-  final Duration repeatInterval;
+  final Duration? repeatInterval;
 
   /// **Android** only. The duration for which the work repeats from the end of the [repeatInterval].
   ///
   /// Note that flex intervals are ignored for certain Android OS versions (in particular, API 23).
-  final Duration flexInterval;
+  final Duration? flexInterval;
 
   /// Instantiates a [WorkIntent] with an [identifier].
   ///
   /// Optional properties include [tags], [input] data and an [initialDelay].
   const WorkIntent({
-    @required this.identifier,
+    required this.identifier,
     this.tags,
     this.input,
     this.initialDelay,
@@ -82,20 +82,20 @@ class WorkPayload {
   final Iterable<String> tags;
 
   /// Input of the work.
-  final Map<String, dynamic> input;
+  final Map<String, dynamic>? input;
 
   /// Instantiates the payload for a work.
-  const WorkPayload._({this.id, this.tags, this.input});
+  const WorkPayload._({required this.id, required this.tags, this.input});
 
   /// Decodes the input json into a [WorkPayload].
   factory WorkPayload.fromJson(Map<String, dynamic> json) {
     Map input = json['input'] ?? {};
-    String inputJson = input['data'];
-    input = inputJson?.isNotEmpty == true ? jsonDecode(inputJson) : {};
+    String? inputJson = input['data'];
+    input = inputJson?.isNotEmpty == true ? jsonDecode(inputJson!) : {};
     return WorkPayload._(
       id: json['id'],
       tags: Iterable.castFrom<dynamic, String>(json['tags'] ?? []),
-      input: input,
+      input: input as Map<String, dynamic>?,
     );
   }
 }

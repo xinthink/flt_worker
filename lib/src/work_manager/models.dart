@@ -11,19 +11,19 @@ export '../constraints.dart';
 @immutable
 abstract class WorkRequest {
   /// Tags for grouping work.
-  final Iterable<String> tags;
+  final Iterable<String>? tags;
 
   /// Input data of the work.
-  final Map<String, dynamic> input;
+  final Map<String, dynamic>? input;
 
   /// The duration of initial delay of the work.
-  final Duration initialDelay;
+  final Duration? initialDelay;
 
   /// Constraints for the work to run.
-  final WorkConstraints constraints;
+  final WorkConstraints? constraints;
 
   /// Sets the backoff policy and backoff delay for the work.
-  final BackoffCriteria backoffCriteria;
+  final BackoffCriteria? backoffCriteria;
 
   /// Instantiates a WorkRequest with optional [tags] and [input] data.
   ///
@@ -56,11 +56,11 @@ class OneTimeWorkRequest extends WorkRequest {
   ///
   /// With optional [tags] and [input] data.
   const OneTimeWorkRequest({
-    Iterable<String> tags,
-    Map<String, dynamic> input,
-    Duration initialDelay,
-    WorkConstraints constraints,
-    BackoffCriteria backoffCriteria,
+    Iterable<String>? tags,
+    Map<String, dynamic>? input,
+    Duration? initialDelay,
+    WorkConstraints? constraints,
+    BackoffCriteria? backoffCriteria,
   }) : super(
     tags: tags,
     input: input,
@@ -79,18 +79,18 @@ class PeriodicWorkRequest extends WorkRequest {
   /// The duration for which the work repeats from the end of the [repeatInterval].
   ///
   /// Note that flex intervals are ignored for certain OS versions (in particular, API 23).
-  final Duration flexInterval;
+  final Duration? flexInterval;
 
   /// Creates a [PeriodicWorkRequest] to run periodically once every [repeatInterval] period
   /// , with an optional [flexInterval].
   const PeriodicWorkRequest({
-    @required this.repeatInterval,
+    required this.repeatInterval,
     this.flexInterval,
-    Iterable<String> tags,
-    Map<String, dynamic> input,
-    Duration initialDelay,
-    WorkConstraints constraints,
-    BackoffCriteria backoffCriteria,
+    Iterable<String>? tags,
+    Map<String, dynamic>? input,
+    Duration? initialDelay,
+    WorkConstraints? constraints,
+    BackoffCriteria? backoffCriteria,
   }) : super(
     tags: tags,
     input: input,
@@ -124,14 +124,14 @@ class BackoffCriteria {
 
   /// Creates a [BackoffCriteria] with the backoff [policy] and backoff [delay].
   const BackoffCriteria({
-    @required this.policy,
-    @required this.delay,
+    required this.policy,
+    required this.delay,
   });
 
   /// Serializes this backoff criteria into a json object.
   Map<String, dynamic> toJson() => {
-    'policy': policy?.index,
-    'delay': delay?.inMicroseconds,
+    'policy': policy.index,
+    'delay': delay.inMicroseconds,
   };
 }
 
